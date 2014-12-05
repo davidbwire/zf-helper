@@ -1,0 +1,14 @@
+<?php
+
+echo $this->flashMessenger()->render(\Zend\Mvc\Controller\Plugin\FlashMessenger::NAMESPACE_DEFAULT,
+        array('alert', 'bg-primary', 'text-white'));
+echo $this->flashMessenger()->render(\Zend\Mvc\Controller\Plugin\FlashMessenger::NAMESPACE_INFO,
+        array('alert', 'alert-info', 'text-white'));
+echo $this->flashMessenger()->render(\Zend\Mvc\Controller\Plugin\FlashMessenger::NAMESPACE_ERROR,
+        array('alert', 'alert-danger', 'text-white'));
+echo $this->flashMessenger()->render(\Zend\Mvc\Controller\Plugin\FlashMessenger::NAMESPACE_SUCCESS,
+        array('alert', 'alert-success', 'text-white'));
+
+echo $this->flashMessenger()->render(\Zend\Mvc\Controller\Plugin\FlashMessenger::NAMESPACE_WARNING,
+        array('alert', 'alert-warning', 'text-white'));
+

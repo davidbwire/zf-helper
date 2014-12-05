@@ -1,0 +1,53 @@
+<div class="">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class='col-md-4 col-md-offset-4'>
+                    <div class="vertical-tab-md"></div>
+                    <div class="vertical-tab-md hidden-sm hidden-xs"></div>
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <div class="panel-title">
+                                <h2 class='text-center'><?php echo $this->translate('Forgot your password?'); ?></h2>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <?php
+                            $this->layout('layout/layout');
+                            $form = $this->forgotForm;
+                            $form->prepare();
+                            $form->setAttribute('action',
+                                    $this->url('zfcuser/forgotpassword'));
+                            $form->setAttribute('method', 'post');
+                            ?>
+
+                            <?php echo $this->form()->openTag($form) ?>
+                            <?php echo $this->formElementErrors($form->get('email')) ?>
+                            <div class="form-group">
+                                <?php echo $this->formLabel($form->get('email')) ?>
+                                <?php
+                                echo $this->formInput($form->get('email')->setAttribute('class',
+                                                'form-control')->setAttribute('placeholder',
+                                                '* Your email'));
+                                ?>
+                            </div>
+                            <div class="form-group">
+                                <?php
+                                $submit = $form->get('submit');
+                                $submit->setAttribute('class',
+                                        'btn btn-success btn-xl btn-block');
+                                ?>
+                                <?php echo $this->formButton($submit) ?>
+                            </div>
+                            <?php echo $this->form()->closeTag() ?>
+
+                            <a href="<?php echo $this->url('zfcuser/login') ?>"><?php echo $this->translate('Back to login.'); ?></a>
+                        </div>
+                    </div>
+                    <div class="vertical-tab-md"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

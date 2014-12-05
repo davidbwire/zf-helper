@@ -1,0 +1,39 @@
+<?php $this->headTitle('Error'); ?>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12 vertical-tab-lg"></div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12 col-md-10 col-md-offset-1">    <h1>403 Forbidden</h1>
+            <p class="lead">
+                <?php
+                $this->layout('layout/layout');
+                if (\BjyAuthorize\Guard\Controller::ERROR === $error) :
+                    ?>
+                You are not authorized to access <?php echo($controller); ?>
+                    <?php if ($action) : ?>
+                        ::<?php echo($action); ?>Action()
+                    <?php endif; ?>
+                        .
+                        <?php elseif (\BjyAuthorize\Guard\Route::ERROR === $error) : ?>
+                    You are not authorized to access <?php echo $route; ?>.
+                <?php elseif ($error == 'error-unauthorized') : ?>
+                    You are not authorized <?php echo $reason; ?>.
+                <?php else : ?>
+                    An unknown error occurred.
+                <?php endif; ?>
+            </p>
+            <p class="lead">This error may occur because :-</p>
+            <ol>
+                <li><p>You're not signed in. If so, <a href='<?= $this->url('login'); ?>'>sign in</a>.</p></li>
+                <li><p>Your account does not have the privilege to view the resource.  If so, talk to your branch administrator. </p></li>
+            </ol>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12 vertical-tab-lg"></div>
+        <div class="col-sm-12 vertical-tab-lg"></div>
+        <div class="col-sm-12 vertical-tab-lg"></div>
+        <div class="col-sm-12 vertical-tab-lg"></div>
+    </div>
+</div>

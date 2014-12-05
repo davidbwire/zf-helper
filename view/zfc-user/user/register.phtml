@@ -1,0 +1,74 @@
+<?php $this->headTitle('Sign Up'); ?>
+<div class="">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+                <div class='col-md-10 col-md-offset-1'>
+                    <div class="vertical-tab-lg"></div>
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <div class="panel-title">
+                                <h2 class='text-center'><?php echo $this->translate('Register'); ?></h2>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+
+                            <?php
+                            if ($this->enableRegistration) {
+                                $form = $this->registerForm;
+                                $form->prepare();
+                                $form->setAttribute('action',
+                                        $this->url('zfcuser/register'));
+                                $form->setAttribute('method', 'post');
+                                ?>
+
+                                <?php echo $this->form()->openTag($form) ?>
+                                <?php foreach ($form as $element): ?>
+                                    <?php if (!$element instanceof Zend\Form\Element\Button): ?>
+                                        <?php
+                                        $element->setAttribute('class',
+                                                'form-control');
+                                        ?>
+                                        <div class='form-group'>
+                                            <?php echo $this->formLabel($element) ?>
+                                        </div>
+                                    <?php endif ?>
+                                    <?php if ($element instanceof Zend\Form\Element\Button): ?>
+                                        <div class='form-group'>
+                                            <?php
+                                            $element->setAttribute('class',
+                                                    'btn btn-block btn-xl btn-success');
+                                            echo $this->formButton($element)
+                                            ?>
+                                        </div>
+                                    <?php elseif ($element instanceof Zend\Form\Element\Captcha): ?>
+                                        <div class='form-group'>
+                                            <?php echo $this->formCaptcha($element) . $this->formElementErrors($element) ?>
+                                        </div>
+                                    <?php else: ?>
+                                        <div class='form-group'>
+                                            <?php echo $this->formInput($element) . $this->formElementErrors($element) ?>
+                                        </div>
+                                    <?php endif ?>
+                                <?php endforeach ?>
+                                <?php if ($this->redirect): ?>
+                                    <input type="hidden" name="redirect" value="<?php echo $this->escapeHtml($this->redirect) ?>" />
+                                <?php endif ?>
+                                <?php
+                                echo $this->form()->closeTag();
+                            } else {
+                                ?>
+                                <div class="vertical-tab-lg"></div>
+                                <p class="lead text-center">Registration is disabled</p>
+                                <div class="vertical-tab-lg"></div>
+                                <?php
+                            }
+                            ?>
+                        </div>
+                    </div>
+                    <div class="vertical-tab-md"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,15 @@
+<?php
+/*
+ * Copyright 2014 Bitmarshals Digital <sanicms@bitmarshals.co.ke>.
+ */
+$message = $this->messageContent;
+?>
+<div class="row">
+    <div class="col-sm-12 col-md-11 col-md-offset-1">
+        <?= $message['message_body']; ?>
+        <p>From, <br> <?= ucwords($message['first_name']) . ' ' . ucwords($message['last_name']) ?>. <br>
+            <?= $message['email'] ?>
+            <br><?= $message['phone'] ?>
+        </p>
+    </div>
+</div>

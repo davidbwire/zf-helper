@@ -1,0 +1,1 @@
+This folder contains the view files for the helper module and other vendor modules
