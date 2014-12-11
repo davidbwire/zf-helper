@@ -38,7 +38,6 @@ class Module implements ViewHelperProviderInterface,
 
     public function onBootstrap(EventInterface $e)
     {
-        $sm = $e->getApplication()->getServiceManager();
         $sharedEventManager = $e->getApplication()->getEventManager()->getSharedManager();
         // automatically setting a layout file based on a config file
         // and the requested module
@@ -54,32 +53,7 @@ class Module implements ViewHelperProviderInterface,
                 $controller->layout($config['module_layouts'][$moduleNamespace]);
             }
         }, 100);
-        /**
-         * Attach ZfcUser Module listeners
-         */
-        $sharedEventManager->attach('ZfcUser\Authentication\Adapter\AdapterChain',
-                'authenticate.success',
-                array($sm->get('HelperZfcUserListener'), 'onAuthenticateSuccess'));
-        $sharedEventManager->attach('ZfcUser\Authentication\Adapter\AdapterChain',
-                'authenticate.fail',
-                array($sm->get('HelperZfcUserListener'), 'onAuthenticateFail'));
-        $sharedEventManager->attach('ZfcUser\Form\Login', 'init',
-                array($sm->get('HelperZfcUserListener'), 'onLoginFormInit'));
-        $sharedEventManager->attach('ZfcUser\Form\LoginFilter', 'init',
-                array($sm->get('HelperZfcUserListener'), 'onLoginFilterInit'));
-        /**
-         * Attach Goalio Module listeners
-         */
-        $sharedEventManager->attach('GoalioForgotPassword\Service\Password',
-                'resetPassword',
-                array($sm->get('HelperGoalioForgotPasswordListener'), 'onResetPassword'));
-
-        // get the view helper manager from the application service manager
-        $viewHelperManager = $sm->get('viewHelperManager');
-        // get the headTitle helper from the view helper manager
-        $headTitle = $viewHelperManager->get('headTitle');
-        $headTitle->setSeparator(' - ');
-        $headTitle->append('SaniCMS');
+       
     }
 
     public function getViewHelperConfig()
