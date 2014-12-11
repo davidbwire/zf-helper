@@ -18,10 +18,30 @@ return array(
                     ),
                 ),
             ),
+            'sign_in' => array(
+                'type' => 'Literal',
+                'options' => array(
+                    'route' => '/sign-in',
+                    'defaults' => array(
+                        'controller' => 'zfcuser',
+                        'action' => 'login',
+                    ),
+                ),
+            ),
             'logout' => array(
                 'type' => 'Literal',
                 'options' => array(
                     'route' => '/logout',
+                    'defaults' => array(
+                        'controller' => 'zfcuser',
+                        'action' => 'logout',
+                    ),
+                ),
+            ),
+            'sign_out' => array(
+                'type' => 'Literal',
+                'options' => array(
+                    'route' => '/sign-out',
                     'defaults' => array(
                         'controller' => 'zfcuser',
                         'action' => 'logout',
