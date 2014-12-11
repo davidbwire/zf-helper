@@ -2,9 +2,7 @@
 
 return array(
     'controllers' => array(
-        'invokables' => array(
-            'HelperIndexController' => '\Helper\Controller\IndexController',
-        ),
+        'invokables' => array(),
     ),
     'router' => array(
         'routes' => array(
