@@ -1,9 +1,9 @@
 <?php $this->headTitle('Change Email'); ?>
 <div class='span6 info-pack'><h3><?php
-        $this->layout('layout/account');
-        echo sprintf($this->translate('Change Email for %s'),
-                $this->zfcUserDisplayName());
-        ?></h3>
+        $this->layout('layout/change_email');
+    echo sprintf($this->translate('Change Email for %s'),
+            $this->zfcUserDisplayName());
+    ?></h3>
     <?php if ($status === true) : ?>
     <div class="alert alert-success"><?php echo $this->translate('Email address changed successfully.'); ?></div>
     <?php elseif ($status === false) : ?>
