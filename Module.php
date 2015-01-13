@@ -73,6 +73,7 @@ class Module implements ViewHelperProviderInterface,
                 'formElementerrors' => '\Helper\Form\View\Helper\FormElementErrors',
                 'flashMessenger' => '\Helper\View\Helper\FlashMessenger',
                 'anchor' => '\Helper\View\Helper\Anchor',
+                'menu' => '\Helper\View\Helper\Navigation\Menu'
             ),
             'factories' => array(
                 'UserName' => function($sm) {
