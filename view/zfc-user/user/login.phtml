@@ -3,7 +3,7 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <div class='col-md-4 col-md-offset-4'>
+                <div class='form-login-wrapper'>
                     <div class="panel panel-primary">
                         <div class="panel-heading">
                             <div class="panel-title">
@@ -58,10 +58,8 @@
                             </div>
                             <div class="form-group">
                                 <div class="vertical-tab-xs"></div>
-                                <p><?php echo $this->translate("Forgot your password?"); ?>
-                                    <a href="<?php echo $this->url('zfcuser/forgotpassword') ?>">reset it here</a></p>
-
-
+                                <div class="col-md-6"><p class="text-center"><a class="hidden" href="">Join your church</a></p></div>
+                                <div class="col-md-6"><p class="text-center"><a  href="<?php echo $this->url('zfcuser/forgotpassword') ?>"><?php echo $this->translate("Forgot password?"); ?></a></p></div>
                                 <?php if ($this->enableRegistration) : ?>
                                     <?php //echo $this->translate('Not registered?');      ?>
                                                                                                                         <!--<a href="<?php //echo $this->url('zfcuser/register') . ($this->redirect ? '?redirect=' . $this->redirect : '')                        ?>"><?php // echo $this->translate('Sign up!');                        ?></a>-->
