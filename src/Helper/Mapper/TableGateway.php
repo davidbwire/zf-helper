@@ -114,10 +114,16 @@ class TableGateway extends ZfTableGateway implements ServiceLocatorAwareInterfac
     public function add($model)
     {
         if (is_array($model)) {
+            if (isset($model['create_time']) && empty($model['create_time'])) {
+                $model['create_time'] = $this->getCreateTime();
+            }
             return $this->insert($model);
         } elseif (is_object($model)) {
             $data = $this->resolveDataInputFields($model);
             if (is_array($data) && count($data)) {
+                if (isset($data['create_time']) && empty($data['create_time'])) {
+                    $data['create_time'] = $this->getCreateTime();
+                }
                 $affectedRows = $this->insert($data);
                 if (method_exists($model, 'setId')) {
                     $model->setId($this->lastInsertValue);
