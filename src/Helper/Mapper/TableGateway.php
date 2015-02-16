@@ -20,9 +20,9 @@ class TableGateway extends ZfTableGateway implements ServiceLocatorAwareInterfac
 
     /**
      *
-     * @var Adapter
+     * @var Logger
      */
-    protected $logger;
+    private $logger;
 
     /**
      *
@@ -180,6 +180,7 @@ class TableGateway extends ZfTableGateway implements ServiceLocatorAwareInterfac
         $now = new \DateTime('now');
         return $now->format('Y-m-d H:i:s');
     }
+
     /**
      *
      * @return ServiceLocatorInterface
@@ -188,6 +189,7 @@ class TableGateway extends ZfTableGateway implements ServiceLocatorAwareInterfac
     {
         return $this->serviceLocator;
     }
+
     /**
      *
      * @param ServiceLocatorInterface $serviceLocator
@@ -210,6 +212,7 @@ class TableGateway extends ZfTableGateway implements ServiceLocatorAwareInterfac
         }
         return $this->logger;
     }
+
     /**
      *
      * @param Logger $logger
@@ -219,6 +222,24 @@ class TableGateway extends ZfTableGateway implements ServiceLocatorAwareInterfac
     {
         $this->logger = $logger;
         return $this;
+    }
+
+    public function beginTransaction()
+    {
+        $this->getAdapter()->getDriver()
+                ->getConnection()->beginTransaction();
+    }
+
+    public function rollback()
+    {
+        $this->getAdapter()->getDriver()
+                ->getConnection()->rollback();
+    }
+
+    public function commit()
+    {
+        $this->getAdapter()->getDriver()
+                ->getConnection()->commit();
     }
 
 }
