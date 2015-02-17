@@ -172,7 +172,8 @@ class TableGateway extends ZfTableGateway implements ServiceLocatorAwareInterfac
     }
 
     /**
-     * Get create time
+     * Get create time (now) Y-m-d H:i:s
+     * 
      * @return string
      */
     protected function getCreateTime()
@@ -240,6 +241,13 @@ class TableGateway extends ZfTableGateway implements ServiceLocatorAwareInterfac
     {
         $this->getAdapter()->getDriver()
                 ->getConnection()->commit();
+    }
+
+    protected function getExceptionSummary(\Exception $ex)
+    {
+        return PHP_EOL .
+                '>>>Exception' . ' - ' . $ex->getMessage() .
+                PHP_EOL . '>>>File ' . $ex->getFile() . ' Line ' . $ex->getLine();
     }
 
 }
