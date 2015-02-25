@@ -1,14 +1,11 @@
-
 <?php $this->headTitle('Change Email'); ?>
 <?php $this->layout('layout/change_email'); ?>
 <div class='col-sm-12'>
     <?php
     $form = $this->changeEmailForm;
-
     $form->prepare();
     $form->setAttribute('action', $this->url('zfcuser/changeemail'));
     $form->setAttribute('method', 'post');
-
     $form->setAttribute('class', 'form-horizontal');
     ?>
     <!--open form-->
@@ -34,39 +31,42 @@
                     <?php endif; ?>
                 </div>
             </div>
-
-
-            <!--INSERT HERE-->
+            <?php foreach ($form as $element): ?>
             <div class="row">
-                <div class="col-sm-6">
-                    <?php foreach ($form as $element): ?>
+                    <div class="col-sm-6">
                         <?php if ($element->getLabel() != null): ?>
-
                             <?php echo $this->formLabel($element); ?>
-
                         <?php endif ?>
                         <?php if ($element instanceof Zend\Form\Element\Button): ?>
+                            <?php
+                            $element->setAttribute('class', 'form-control');
+                            echo $this->formButton($element);
+                            ?>
+                        <div class="validation-messages">
+                                    <p class="text-danger"> </p>
+                                </div>
+                            <?php elseif ($element instanceof Zend\Form\Element\Captcha): ?>
 
-                            <?php echo $this->formButton($element); ?>
-
-                        <?php elseif ($element instanceof Zend\Form\Element\Captcha): ?>
-
-                            <?php echo $this->formCaptcha($element); ?>
-                            <?php echo $this->formElementErrors($element); ?>
-
-
-                        <?php else: ?>
-
-                            <?php echo $this->formInput($element); ?>
-                            <?php echo $this->formElementErrors($element); ?>
-
-                        <?php endif ?>
-                    <?php endforeach; ?>
-
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-6">
+                                <?php echo $this->formCaptcha($element); ?>
+                                <?php echo $this->formElementErrors($element); ?>
+                                <div class="validation-messages">
+                                    <p class="text-danger"> </p>
+                                </div>
+                            <?php else: ?>
+                                <?php
+                                $element->setAttribute('class', 'form-control');
+                                echo $this->formInput($element);
+                                ?>
+                                <?php echo $this->formElementErrors($element); ?>
+                                <div class="validation-messages">
+                                    <p class="text-danger"> </p>
+                                </div>
+                            <?php endif ?>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+                <div class="row">
+                    <div class="col-sm-6">
                     <div class="vertical-tab-xs"></div>
                     <?php if ($this->redirect): ?>
                     <input type="hidden" name="redirect" value="<?php echo $this->redirect ?>" />
@@ -74,7 +74,6 @@
                     <input type="submit" class="btn btn-block btn-success btn-lg" value="Save Details" />
                 </div>
             </div>
-
         </div>
     </div>
     <!--close form-->
