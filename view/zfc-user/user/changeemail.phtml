@@ -1,39 +1,83 @@
+
 <?php $this->headTitle('Change Email'); ?>
-<div class='span6 info-pack'><h3><?php
-        $this->layout('layout/change_email');
-    echo sprintf($this->translate('Change Email for %s'),
-            $this->zfcUserDisplayName());
-    ?></h3>
-    <?php if ($status === true) : ?>
-    <div class="alert alert-success"><?php echo $this->translate('Email address changed successfully.'); ?></div>
-    <?php elseif ($status === false) : ?>
-        <div class="alert alert-error"><?php echo $this->translate('Unable to update your email address. Please try again.'); ?></div>
-    <?php endif; ?>
+<?php $this->layout('layout/change_email'); ?>
+<div class='col-sm-12'>
     <?php
     $form = $this->changeEmailForm;
 
     $form->prepare();
     $form->setAttribute('action', $this->url('zfcuser/changeemail'));
     $form->setAttribute('method', 'post');
+
+    $form->setAttribute('class', 'form-horizontal');
     ?>
-        <?php echo $this->form()->openTag($form) ?>
-        <dl class="zend_form">
-            <?php foreach ($form as $element): ?>
-                <?php if ($element->getLabel() != null): ?>
-                    <dt><?php echo $this->formLabel($element) ?></dt>
-                <?php endif ?>
-                <?php if ($element instanceof Zend\Form\Element\Button): ?>
-                    <dd><?php echo $this->formButton($element) ?></dd>
-                <?php elseif ($element instanceof Zend\Form\Element\Captcha): ?>
-                    <dd><?php echo $this->formCaptcha($element) . $this->formElementErrors($element) ?></dd>
-                <?php else: ?>
-                    <dd><?php echo $this->formInput($element) . $this->formElementErrors($element) ?></dd>
-                <?php endif ?>
-            <?php endforeach ?>
-        </dl>
-        <?php if ($this->redirect): ?>
-            <input type="hidden" name="redirect" value="<?php echo $this->redirect ?>" />
-        <?php endif ?>
-        <input type="submit" class="btn btn-block btn-default btn-large" value="Save Details" />
-        <?php echo $this->form()->closeTag() ?>
+    <!--open form-->
+    <?= $this->form()->openTag($form); ?>
+    <!--end open form-->
+    <!--no need for edit as will always be viewed in edit mode-->
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="row">
+                <div class="col-sm-6">
+                    <h3><?php
+                        echo sprintf($this->translate('Change Email for %s'),
+                                $this->zfcUserDisplayName());
+                        ?></h3>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <?php if ($status === true) : ?>
+                    <div class="alert bg-success text-white"><?php echo $this->translate('Email address changed successfully.'); ?></div>
+                    <?php elseif ($status === false) : ?>
+                        <div class="alert bg-warning text-white"><?php echo $this->translate('Unable to update your email address. Please try again.'); ?></div>
+                    <?php endif; ?>
+                </div>
+            </div>
+
+
+            <!--INSERT HERE-->
+            <div class="row">
+                <div class="col-sm-6">
+                    <?php foreach ($form as $element): ?>
+                        <?php if ($element->getLabel() != null): ?>
+
+                            <?php echo $this->formLabel($element); ?>
+
+                        <?php endif ?>
+                        <?php if ($element instanceof Zend\Form\Element\Button): ?>
+
+                            <?php echo $this->formButton($element); ?>
+
+                        <?php elseif ($element instanceof Zend\Form\Element\Captcha): ?>
+
+                            <?php echo $this->formCaptcha($element); ?>
+                            <?php echo $this->formElementErrors($element); ?>
+
+
+                        <?php else: ?>
+
+                            <?php echo $this->formInput($element); ?>
+                            <?php echo $this->formElementErrors($element); ?>
+
+                        <?php endif ?>
+                    <?php endforeach; ?>
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="vertical-tab-xs"></div>
+                    <?php if ($this->redirect): ?>
+                    <input type="hidden" name="redirect" value="<?php echo $this->redirect ?>" />
+                    <?php endif; ?>
+                    <input type="submit" class="btn btn-block btn-success btn-lg" value="Save Details" />
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!--close form-->
+    <?= $this->form()->closeTag(); ?>
+    <!--end close form-->
 </div>
