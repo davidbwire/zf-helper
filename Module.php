@@ -39,14 +39,14 @@ class Module implements ViewHelperProviderInterface,
 
     public function onBootstrap(EventInterface $e)
     {
-        // $application = $e->getTarget();
-        // $eventManager = $application->getEventManager();
-        // enable redirect to login page by Bjyauthorize on failed authorization
-        // $strategy = new RedirectionStrategy();
-        // eventually set the route name (default is ZfcUser's login route)
-        // $strategy->setRedirectRoute('login');
-        // eventually set the URI to be used for redirects
-        // $eventManager->attach($strategy);
+        $application = $e->getTarget();
+        $eventManager = $application->getEventManager();
+        //enable redirect to login page by Bjyauthorize on failed authorization
+        $strategy = new RedirectionStrategy();
+        //eventually set the route name (default is ZfcUser's login route)
+        $strategy->setRedirectRoute('login');
+        //eventually set the URI to be used for redirects
+        $eventManager->attach($strategy);
 
         $sharedEventManager = $e->getApplication()->getEventManager()->getSharedManager();
         // automatically setting a layout file based on a config file
@@ -63,7 +63,6 @@ class Module implements ViewHelperProviderInterface,
                 $controller->layout($config['module_layouts'][$moduleNamespace]);
             }
         }, 100);
-       
     }
 
     public function getViewHelperConfig()
