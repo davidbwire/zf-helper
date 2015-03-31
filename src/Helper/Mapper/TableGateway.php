@@ -247,6 +247,7 @@ class TableGateway extends ZfTableGateway implements ServiceLocatorAwareInterfac
     {
         return PHP_EOL .
                 '>>>Exception' . ' - ' . $ex->getMessage() .
+                PHP_EOL . '>>>Exception Code ' . $ex->getCode() .
                 PHP_EOL . '>>>File ' . $ex->getFile() . ' Line ' . $ex->getLine();
     }
 
