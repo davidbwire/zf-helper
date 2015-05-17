@@ -9,6 +9,8 @@ use Zend\Db\Adapter\Adapter;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\Log\Logger;
+use ZF\ApiProblem\ApiProblemResponse;
+use ZF\ApiProblem\ApiProblem;
 
 /**
  * Description of AbstractTableGateway
@@ -20,9 +22,9 @@ class TableGateway extends ZfTableGateway implements ServiceLocatorAwareInterfac
 
     /**
      *
-     * @var Adapter
+     * @var Logger
      */
-    protected $logger;
+    private $logger;
 
     /**
      *
@@ -172,7 +174,8 @@ class TableGateway extends ZfTableGateway implements ServiceLocatorAwareInterfac
     }
 
     /**
-     * Get create time
+     * Get create time (now) Y-m-d H:i:s
+     * 
      * @return string
      */
     protected function getCreateTime()
@@ -180,6 +183,7 @@ class TableGateway extends ZfTableGateway implements ServiceLocatorAwareInterfac
         $now = new \DateTime('now');
         return $now->format('Y-m-d H:i:s');
     }
+
     /**
      *
      * @return ServiceLocatorInterface
@@ -188,6 +192,7 @@ class TableGateway extends ZfTableGateway implements ServiceLocatorAwareInterfac
     {
         return $this->serviceLocator;
     }
+
     /**
      *
      * @param ServiceLocatorInterface $serviceLocator
@@ -210,6 +215,7 @@ class TableGateway extends ZfTableGateway implements ServiceLocatorAwareInterfac
         }
         return $this->logger;
     }
+
     /**
      *
      * @param Logger $logger
@@ -219,6 +225,58 @@ class TableGateway extends ZfTableGateway implements ServiceLocatorAwareInterfac
     {
         $this->logger = $logger;
         return $this;
+    }
+
+    public function beginTransaction()
+    {
+        $this->getAdapter()->getDriver()
+                ->getConnection()->beginTransaction();
+    }
+
+    public function rollback()
+    {
+        $this->getAdapter()->getDriver()
+                ->getConnection()->rollback();
+    }
+
+    public function commit()
+    {
+        $this->getAdapter()->getDriver()
+                ->getConnection()->commit();
+    }
+    /**
+     * @deprecated since version number
+     * @param \Exception $ex
+     * @return string
+     */
+    protected function getExceptionSummary(\Exception $ex)
+    {
+        return PHP_EOL .
+                '>>>Exception' . ' - ' . $ex->getMessage() .
+                PHP_EOL . '>>>Exception Code ' . $ex->getCode() .
+                PHP_EOL . '>>>File ' . $ex->getFile() . ' Line ' . $ex->getLine();
+    }
+    /**
+     *
+     * @param \Exception $ex
+     * @return string
+     */
+    protected function exceptionSummary(\Exception $ex)
+    {
+        return PHP_EOL .
+                '>>>Exception' . ' - ' . $ex->getMessage() .
+                PHP_EOL . '>>>Exception Code ' . $ex->getCode() .
+                PHP_EOL . '>>>File ' . $ex->getFile() . ' Line ' . $ex->getLine();
+    }
+
+    /**
+     *
+     * @param ApiProblem $apiProblem
+     * @return ApiProblemResponse
+     */
+    protected function apiProblemResponse(ApiProblem $apiProblem)
+    {
+        return new ApiProblemResponse($apiProblem);
     }
 
 }
