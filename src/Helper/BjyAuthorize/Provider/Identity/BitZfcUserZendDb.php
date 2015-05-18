@@ -40,12 +40,9 @@ class BitZfcUserZendDb extends ZfcUserZendDb
 
         // get roles associated with the logged in user
         $sql = new Sql($this->adapter);
-        $select = $sql->select()->from($this->tableName);
-        $where = new Where();
-
-        $where->equalTo('user_id', $authService->getIdentity()->getId());
-        $select->where($where)
-        ->join('role', 'user_has_role.role_id=role.id',
+        $select = $sql->select()->from('user_has_role');
+        $select->where(array('user_id' => $authService->getIdentity()->getId()))
+                ->join('role', 'user_has_role.role_id=role.id',
                         array('role_name' => 'name'),
                         $select::JOIN_INNER);
         $results = $sql->prepareStatementForSqlObject($select)->execute();
