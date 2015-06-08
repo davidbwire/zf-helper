@@ -47,7 +47,7 @@ class Module implements ViewHelperProviderInterface,
         $strategy->setRedirectRoute('login');
         //eventually set the URI to be used for redirects
         //@todo uncomment redirect strategy on launch
-        //$eventManager->attach($strategy);
+        $eventManager->attach($strategy);
 
         $sharedEventManager = $e->getApplication()->getEventManager()->getSharedManager();
         // automatically setting a layout file based on a config file
