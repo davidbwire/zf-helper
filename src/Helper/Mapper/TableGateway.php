@@ -11,6 +11,7 @@ use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\Log\Logger;
 use ZF\ApiProblem\ApiProblemResponse;
 use ZF\ApiProblem\ApiProblem;
+use Zend\Http\Response;
 
 /**
  * Description of AbstractTableGateway
@@ -244,6 +245,7 @@ class TableGateway extends ZfTableGateway implements ServiceLocatorAwareInterfac
         $this->getAdapter()->getDriver()
                 ->getConnection()->commit();
     }
+
     /**
      * @deprecated since version number
      * @param \Exception $ex
@@ -256,6 +258,7 @@ class TableGateway extends ZfTableGateway implements ServiceLocatorAwareInterfac
                 PHP_EOL . '>>>Exception Code ' . $ex->getCode() .
                 PHP_EOL . '>>>File ' . $ex->getFile() . ' Line ' . $ex->getLine();
     }
+
     /**
      *
      * @param \Exception $ex
@@ -282,6 +285,20 @@ class TableGateway extends ZfTableGateway implements ServiceLocatorAwareInterfac
     protected function apiProblemResponse(ApiProblem $apiProblem)
     {
         return new ApiProblemResponse($apiProblem);
+    }
+
+    /**
+     *
+     * @param int $statusCode
+     * @param int $reasonPhrase
+     * @return Response
+     */
+    protected function httpResponse($statusCode, $reasonPhrase)
+    {
+        $response = new Response();
+        $response->setStatusCode($statusCode)
+                ->setReasonPhrase($reasonPhrase);
+        return $response;
     }
 
 }
