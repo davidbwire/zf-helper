@@ -74,11 +74,21 @@ class Logger extends ZfLogger
         parent::crit($message, $extra);
     }
 
+    public function critical($message, $extra = array())
+    {
+        return $this->crit($message, $extra);
+    }
+
     public function err($message, $extra = array())
     {
         $writer = new Stream($this->getWriterFile('error'));
         $this->addWriter($writer);
         parent::err($message, $extra);
+    }
+
+    public function error($message, $extra = array())
+    {
+        return $this->err($message, $extra);
     }
 
 }

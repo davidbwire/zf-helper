@@ -78,7 +78,8 @@ return array(
     ),
     'service_manager' => [
         'invokables' => [
-            'LoggerService' => '\Helper\Service\Logger'
+            'LoggerService' => '\Helper\Service\Logger',
+            'SmsService' => '\Helper\Service\Sms'
         ],
         'factories' => [
             'DefaultNavigation' => '\Zend\Navigation\Service\DefaultNavigationFactory',
