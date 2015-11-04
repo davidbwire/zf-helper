@@ -87,17 +87,20 @@ class TableGateway extends ZfTableGateway implements ServiceLocatorAwareInterfac
             return null;
         }
     }
-
+    
     /**
      *
      * @param array $params
      * @return ResultsetInterface|null
      */
-    public function fetchAll($params = array())
+    public function fetchAll($params = array(), $condition = array())
     {
         $select = $this->getSlaveSql()->select();
         if (array_key_exists('fields', $params)) {
             $select->columns($params['fields']);
+            if(!empty($condition)){
+                $select = $select->where($condition);
+            }
             $resultset = $this->selectWith($select);
             if ($resultset->count()) {
                 return $resultset;
@@ -301,4 +304,46 @@ class TableGateway extends ZfTableGateway implements ServiceLocatorAwareInterfac
         return $response;
     }
 
+    /**
+     * Delete soft i.e set is_deleted=1
+     * 
+     * @param int $itemId
+     * @return boolean
+     */
+    public function deleteSoft($itemId)
+    {
+        $sql = new Sql($this->getAdapter());
+        $update = $sql->update()
+                ->table($this->getTable())
+                ->where(array('id' => $itemId))
+                ->set(array('is_deleted' => 1));
+        $statement = $sql->prepareStatementForSqlObject($update);
+        $result = $statement->execute();
+        if ($result->getAffectedRows()) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Delete permanently
+     * 
+     * @param int $itemId
+     * @return boolean
+     */
+    public function delete($itemId)
+    {
+        $sql = new Sql($this->getAdapter());
+        $delete = $sql->delete()
+                ->from($this->getTable())
+                ->where(array('id' => $itemId));
+        $statement = $sql->prepareStatementForSqlObject($delete);
+        $result = $statement->execute();
+        if ($result->getAffectedRows()) {
+            return true;
+        }
+        return false;
+    }
+    
 }
+
