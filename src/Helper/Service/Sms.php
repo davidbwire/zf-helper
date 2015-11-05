@@ -58,6 +58,19 @@ class Sms implements ServiceLocatorAwareInterface
      * @var ServiceLocatorInterface
      */
     protected $serviceLocator;
+    /**
+     *
+     * @param type $to
+     * @param type $message
+     * @param type $from
+     * @param type $params
+     * @param type $gateway
+     */
+    public function send($to, $message, $from = '', $params = array(),
+            $gateway = 'AfricasTalking')
+    {
+
+    }
 
     /**
      *
