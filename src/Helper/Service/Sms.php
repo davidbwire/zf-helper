@@ -25,6 +25,12 @@ class Sms implements ServiceLocatorAwareInterface
 
     /**
      *
+     * @var array|Response
+     */
+    protected $result;
+
+    /**
+     *
      * @var string
      */
     protected $apiRootInfobip;
@@ -107,7 +113,8 @@ class Sms implements ServiceLocatorAwareInterface
             try {
                 $result = $africasTalkingGateway->sendMessage($to, $message,
                         $from);
-                return $result;
+                $this->result = $result;
+                return $this;
             } catch (Exception $exc) {
                 $this->getServiceLocator()->get('LoggerService')
                         ->crit($exc->getMessage() . ' ' . __FILE__ . ' ' . __LINE__);
@@ -179,6 +186,15 @@ class Sms implements ServiceLocatorAwareInterface
 
     /**
      *
+     * @return \Zend\Log\Logger
+     */
+    protected function getLogger()
+    {
+        return $this->getServiceLocator()->get('LoggerService');
+    }
+
+    /**
+     *
      * @return ServiceLocatorInterface
      */
     public function getServiceLocator()
@@ -207,6 +223,46 @@ class Sms implements ServiceLocatorAwareInterface
             $this->config = $this->getServiceLocator()->get('Config');
         }
         return $this->config;
+    }
+
+    /**
+     *
+     * @param string $gateway
+     * @return boolean
+     */
+    public function isSuccess($gateway = 'AfricasTalking')
+    {
+        if ($gateway == 'AfricasTalking') {
+            $isSuccessful = false;
+            foreach ($this->result as $userResult) {
+                // iterate all results if all successful then it was a success
+                $isSuccessful = ($userResult->status == 'Success');
+            }
+            return $isSuccessful;
+        } elseif ($gateway == 'Infobip') {
+            return $this->result->isSuccess();
+        }
+        return false;
+    }
+
+    /**
+     *
+     * @return array|Response
+     */
+    public function getResult()
+    {
+        return $this->result;
+    }
+
+    /**
+     *
+     * @param array|Response $result
+     * @return \Helper\Service\Sms
+     */
+    public function setResult($result)
+    {
+        $this->result = $result;
+        return $this;
     }
 
 }
