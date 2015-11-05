@@ -13,6 +13,7 @@ use Zend\Http\Request;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Http\Response;
+use Helper\AfricasTalking\AfricasTalkingGateway;
 
 /**
  * Description of SmsService
@@ -58,18 +59,57 @@ class Sms implements ServiceLocatorAwareInterface
      * @var ServiceLocatorInterface
      */
     protected $serviceLocator;
+
     /**
      *
-     * @param type $to
-     * @param type $message
-     * @param type $from
-     * @param type $params
-     * @param type $gateway
+     * @param string $to
+     * @param string $message
+     * @param string $from
+     * @param array $params
+     * @param string $gateway
      */
-    public function send($to, $message, $from = '', $params = array(),
+    public function send($to, $message, $from = null, $params = array(),
             $gateway = 'AfricasTalking')
     {
-
+        switch ($gateway) {
+            case 'AfricasTalking':
+                return $this->sendSmsViaAfricasTalkingGateway($to, $message,
+                                $from);
+            case 'Infobip':
+                return $this->sendSingleSmsInfobip($to, $message, $from);
+            default:
+                return $this->sendSmsViaAfricasTalkingGateway($to, $message,
+                                $from);
+        }
+    }
+    /**
+     *
+     * @param string $to
+     * @param string $message
+     * @param string $from
+     * @param array $params
+     * @return type
+     * @throws Exception
+     */
+    private function sendSmsViaAfricasTalkingGateway($to, $message,
+            $from = null, $params = array())
+    {
+        $config = $this->getConfig();
+        if (isset($config['mobichurch']['africas_talking'])) {
+            $at = $config['mobichurch']['africas_talking'];
+            $username = $at['username'];
+            $apiKey = $at['apiKey'];
+            // instantiate afrcias talking gateway
+            $africasTalkingGateway = new AfricasTalkingGateway($username,
+                    $apiKey);
+            // send message
+            return $africasTalkingGateway->sendMessage($to, $message, $from);
+        } else {
+            // log
+            $logger = $this->getServiceLocator()->get('LoggerService');
+            $logger->err('Missing parameters to connect to infobip api.');
+            throw new Exception('Missing parameters to connect to AfricasTalking gateway.');
+        }
     }
 
     /**
@@ -117,17 +157,15 @@ class Sms implements ServiceLocatorAwareInterface
         if (isset($config['mobichurch']['infobip'])) {
             $aInfobip = $config['mobichurch']['infobip'];
             $this->defaultSenderIdInfobip = $aInfobip['defaultSenderId'];
-            $this->userNameInfobip = $aInfobip['userName'];
+            $this->userNameInfobip = $aInfobip['username'];
             $this->apiRootInfobip = $aInfobip['apiRoot'];
             $this->passwordInfobip = $aInfobip['password'];
         } else {
             // log
             $logger = $this->getServiceLocator()->get('LoggerService');
             $logger->err('Missing parameters to connect to infobip api.');
-            // return error
-            $response = new Response();
-            return $response->setStatusCode(500)
-                            ->setReasonPhrase('Missing parameters to connect to infobip api.');
+            // throw error
+            throw new Exception('Missing parameters to connect to infobip api.');
         }
     }
 
