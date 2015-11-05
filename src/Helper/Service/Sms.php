@@ -82,6 +82,7 @@ class Sms implements ServiceLocatorAwareInterface
                                 $from);
         }
     }
+
     /**
      *
      * @param string $to
@@ -103,7 +104,14 @@ class Sms implements ServiceLocatorAwareInterface
             $africasTalkingGateway = new AfricasTalkingGateway($username,
                     $apiKey);
             // send message
-            return $africasTalkingGateway->sendMessage($to, $message, $from);
+            try {
+                $result = $africasTalkingGateway->sendMessage($to, $message,
+                        $from);
+                return $result;
+            } catch (Exception $exc) {
+                $this->getServiceLocator()->get('LoggerService')
+                        ->crit($exc->getMessage() . ' ' . __FILE__ . ' ' . __LINE__);
+            }
         } else {
             // log
             $logger = $this->getServiceLocator()->get('LoggerService');
