@@ -120,10 +120,12 @@ class TableGateway extends ZfTableGateway implements ServiceLocatorAwareInterfac
     public function add($model)
     {
         if (is_array($model)) {
-            if (isset($model['create_time']) && empty($model['create_time'])) {
+            if ((isset($model['create_time']) && empty($model['create_time'])) || ! isset($model['create_time'])) {
                 $model['create_time'] = $this->getCreateTime();
             }
-            return $this->insert($model);
+            
+            $this->insert($model);
+            return $this->lastInsertValue;
         } elseif (is_object($model)) {
             $data = $this->resolveDataInputFields($model);
             if (is_array($data) && count($data)) {
@@ -134,7 +136,8 @@ class TableGateway extends ZfTableGateway implements ServiceLocatorAwareInterfac
                 if (method_exists($model, 'setId')) {
                     $model->setId($this->lastInsertValue);
                 }
-                return $affectedRows;
+                // return $affectedRows;
+                return $this->lastInsertValue;
             } else {
                 return null;
             }
