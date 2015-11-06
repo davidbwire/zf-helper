@@ -129,7 +129,7 @@ class TableGateway extends ZfTableGateway implements ServiceLocatorAwareInterfac
         } elseif (is_object($model)) {
             $data = $this->resolveDataInputFields($model);
             if (is_array($data) && count($data)) {
-                if (isset($data['create_time']) && empty($data['create_time'])) {
+                if ((isset($data['create_time']) && empty($data['create_time'])) || ! isset($model['create_time'])) {
                     $data['create_time'] = $this->getCreateTime();
                 }
                 $affectedRows = $this->insert($data);
