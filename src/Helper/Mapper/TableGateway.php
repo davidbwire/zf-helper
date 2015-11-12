@@ -327,7 +327,7 @@ class TableGateway extends ZfTableGateway implements ServiceLocatorAwareInterfac
         }
         return false;
     }
-
+    
     /**
      * Delete permanently
      * 
@@ -410,7 +410,7 @@ class TableGateway extends ZfTableGateway implements ServiceLocatorAwareInterfac
                             $join_param['table'], 
                             $join_param['on'], 
                             isset($join_param['fields'])?$join_param['fields']:array(), 
-                            isset($join_param['type'])?$join_param['type']:'inner' 
+                            isset($join_param['type'])?strtolower($join_param['type']):'inner' 
                         );
                     }
                 }
@@ -430,6 +430,26 @@ class TableGateway extends ZfTableGateway implements ServiceLocatorAwareInterfac
         }
     }
     
+    /**
+     * Update table
+     * 
+     * @param int $itemId
+     * @return boolean
+     */
+    public function updateTable($condition, $values)
+    {
+        $sql = new Sql($this->getAdapter());
+        $update = $sql->update()
+                ->table($this->getTable())
+                ->where($condition)
+                ->set($values);
+        $statement = $sql->prepareStatementForSqlObject($update);
+        $result = $statement->execute();
+        if ($result->getAffectedRows()) {
+            return true;
+        }
+        return false;
+    }
     
 
 }
