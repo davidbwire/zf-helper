@@ -106,6 +106,15 @@ class Sms implements ServiceLocatorAwareInterface
             $at = $config['mobichurch']['africas_talking'];
             $username = $at['username'];
             $apiKey = $at['apiKey'];
+            $senderId = $at['senderId'] ? $at['senderId'] : null;
+            $shortCode = $at['shortCode'] ? $at['shortCode'] : null;
+            if ($from === null) {
+                if (!empty($shortCode)) {
+                    $from = $shortCode;
+                } elseif (!empty($senderId)) {
+                    $from = $senderId;
+                }
+            }
             // instantiate afrcias talking gateway
             $africasTalkingGateway = new AfricasTalkingGateway($username,
                     $apiKey);
