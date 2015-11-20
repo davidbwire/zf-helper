@@ -70,17 +70,17 @@ class Sms implements ServiceLocatorAwareInterface
      *
      * @param string $to
      * @param string $message
-     * @param string $from
+     * @param string $use senderId|shortCode
      * @param array $params
      * @param string $gateway
      */
-    public function send($to, $message, $from = null, $params = array(),
-            $gateway = 'AfricasTalking')
+    public function send($to, $message, $use = 'senderId',
+            $params = array(), $gateway = 'AfricasTalking')
     {
         switch ($gateway) {
             case 'AfricasTalking':
                 return $this->sendSmsViaAfricasTalkingGateway($to, $message,
-                                $from);
+                                $use, $params);
             case 'Infobip':
                 return $this->sendSingleSmsInfobip($to, $message, $from);
             default:
@@ -93,13 +93,12 @@ class Sms implements ServiceLocatorAwareInterface
      *
      * @param string $to
      * @param string $message
-     * @param string $use use sender_id|short_code
-     * @param array $params
+     * @param string $use use senderId|shortCode
      * @return type
      * @throws Exception
      */
     private function sendSmsViaAfricasTalkingGateway($to, $message,
-            $use = 'sender_id', $params = array())
+            $use = 'senderId')
     {
         $config = $this->getConfig();
         if (isset($config['mobichurch']['africas_talking'])) {
@@ -109,11 +108,11 @@ class Sms implements ServiceLocatorAwareInterface
             $senderId = $at['senderId'] ? $at['senderId'] : null;
             $shortCode = $at['shortCode'] ? $at['shortCode'] : null;
             $from == null;
-            if ($use === 'sender_id') {
+            if ($use === 'senderId') {
                 if (!empty($senderId)) {
                     $from = $senderId;
                 }
-            } elseif ($use == 'short_code') {
+            } elseif ($use == 'shortCode') {
                 if (!empty($shortCode)) {
                     $from = $shortCode;
                 }
@@ -124,7 +123,7 @@ class Sms implements ServiceLocatorAwareInterface
                     $apiKey);
             // send message
             try {
-                if ($use == 'sender_id') {
+                if ($use == 'senderId') {
                     // send message normally
                     $result = $africasTalkingGateway->sendMessage($to, $message,
                             $from);
