@@ -71,21 +71,20 @@ class Sms implements ServiceLocatorAwareInterface
      * @param string $to
      * @param string $message
      * @param string $use senderId|shortCode
-     * @param array $params
      * @param string $gateway
      */
     public function send($to, $message, $use = 'senderId',
-            $params = array(), $gateway = 'AfricasTalking')
+            $gateway = 'AfricasTalking')
     {
         switch ($gateway) {
             case 'AfricasTalking':
                 return $this->sendSmsViaAfricasTalkingGateway($to, $message,
-                                $use, $params);
+                                $use);
             case 'Infobip':
-                return $this->sendSingleSmsInfobip($to, $message, $from);
+                return $this->sendSingleSmsInfobip($to, $message);
             default:
                 return $this->sendSmsViaAfricasTalkingGateway($to, $message,
-                                $from);
+                                $use);
         }
     }
 
@@ -160,11 +159,11 @@ class Sms implements ServiceLocatorAwareInterface
      *
      * @param int $to
      * @param string $message
-     * @param string $from
      * @return \Zend\Http\Response
      */
-    public function sendSingleSmsInfobip($to, $message, $from = '')
+    public function sendSingleSmsInfobip($to, $message)
     {
+        $from = null;
         // initialize variables
         $result = $this->initializeInfobipVariables();
         if ($result instanceof Response) {
