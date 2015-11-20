@@ -93,13 +93,13 @@ class Sms implements ServiceLocatorAwareInterface
      *
      * @param string $to
      * @param string $message
-     * @param string $from
+     * @param string $from use sender_id|short_code
      * @param array $params
      * @return type
      * @throws Exception
      */
     private function sendSmsViaAfricasTalkingGateway($to, $message,
-            $from = null, $params = array())
+            $from = 'sender_id', $params = array())
     {
         $config = $this->getConfig();
         if (isset($config['mobichurch']['africas_talking'])) {
@@ -108,13 +108,19 @@ class Sms implements ServiceLocatorAwareInterface
             $apiKey = $at['apiKey'];
             $senderId = $at['senderId'] ? $at['senderId'] : null;
             $shortCode = $at['shortCode'] ? $at['shortCode'] : null;
-            if ($from === null) {
-                if (!empty($shortCode)) {
-                    $from = $shortCode;
-                } elseif (!empty($senderId)) {
+            if ($from === 'sender_id') {
+                if (!empty($senderId)) {
                     $from = $senderId;
                 }
+            } elseif ($from == 'short_code') {
+                if (!empty($shortCode)) {
+                    $from = $shortCode;
+                }
+            } else {
+                // let africas talking decide
+                $from = null;
             }
+
             // instantiate afrcias talking gateway
             $africasTalkingGateway = new AfricasTalkingGateway($username,
                     $apiKey);
