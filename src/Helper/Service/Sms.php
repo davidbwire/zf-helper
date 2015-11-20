@@ -93,13 +93,13 @@ class Sms implements ServiceLocatorAwareInterface
      *
      * @param string $to
      * @param string $message
-     * @param string $from use sender_id|short_code
+     * @param string $use use sender_id|short_code
      * @param array $params
      * @return type
      * @throws Exception
      */
     private function sendSmsViaAfricasTalkingGateway($to, $message,
-            $from = 'sender_id', $params = array())
+            $use = 'sender_id', $params = array())
     {
         $config = $this->getConfig();
         if (isset($config['mobichurch']['africas_talking'])) {
@@ -108,17 +108,15 @@ class Sms implements ServiceLocatorAwareInterface
             $apiKey = $at['apiKey'];
             $senderId = $at['senderId'] ? $at['senderId'] : null;
             $shortCode = $at['shortCode'] ? $at['shortCode'] : null;
-            if ($from === 'sender_id') {
+            $from == null;
+            if ($use === 'sender_id') {
                 if (!empty($senderId)) {
                     $from = $senderId;
                 }
-            } elseif ($from == 'short_code') {
+            } elseif ($use == 'short_code') {
                 if (!empty($shortCode)) {
                     $from = $shortCode;
                 }
-            } else {
-                // let africas talking decide
-                $from = null;
             }
 
             // instantiate afrcias talking gateway
@@ -126,8 +124,25 @@ class Sms implements ServiceLocatorAwareInterface
                     $apiKey);
             // send message
             try {
-                $result = $africasTalkingGateway->sendMessage($to, $message,
-                        $from);
+                if ($use == 'sender_id') {
+                    // send message normally
+                    $result = $africasTalkingGateway->sendMessage($to, $message,
+                            $from);
+                } else {
+                    // send via short_code
+                    $linkId1 = '20124749075603855022';
+                    $linkId2 = '20124850075903883627';
+                    $result = $africasTalkingGateway->sendMessage($to, $message,
+                            $from, 0, array('linkId' => $linkId1));
+                    try {
+                        $this->getLogger()->error((array) $result);
+                    } catch (Exception $exc) {
+                        $this->getServiceLocator()->get('LoggerService')
+                                ->crit($exc->getMessage() . ' ' . __FILE__ . ' ' . __LINE__);
+                    }
+                    $this->result = $result;
+                    return $this;
+                }
                 $this->result = $result;
                 return $this;
             } catch (Exception $exc) {
