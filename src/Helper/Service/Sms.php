@@ -71,15 +71,16 @@ class Sms implements ServiceLocatorAwareInterface
      * @param string $to
      * @param string $message
      * @param string $use senderId|shortCode
+     * @param array $params linkId, etc
      * @param string $gateway
      */
     public function send($to, $message, $use = 'senderId',
-            $gateway = 'AfricasTalking')
+            array $params = array(), $gateway = 'AfricasTalking')
     {
         switch ($gateway) {
             case 'AfricasTalking':
                 return $this->sendSmsViaAfricasTalkingGateway($to, $message,
-                                $use);
+                                $use, $params);
             case 'Infobip':
                 return $this->sendSingleSmsInfobip($to, $message);
             default:
@@ -93,11 +94,12 @@ class Sms implements ServiceLocatorAwareInterface
      * @param string $to
      * @param string $message
      * @param string $use use senderId|shortCode
+     * @param array $params
      * @return type
      * @throws Exception
      */
     private function sendSmsViaAfricasTalkingGateway($to, $message,
-            $use = 'senderId')
+            $use = 'senderId', array $params = array())
     {
         $config = $this->getConfig();
         if (isset($config['mobichurch']['africas_talking'])) {
@@ -128,10 +130,12 @@ class Sms implements ServiceLocatorAwareInterface
                             $from);
                 } else {
                     // send via short_code
-                    $linkId1 = '20124749075603855022';
-                    $linkId2 = '20124850075903883627';
+                    $linkId = null;
+                    if (array_key_exists('linkId', $params)) {
+                        $linkId = $params['linkId'];
+                    }
                     $result = $africasTalkingGateway->sendMessage($to, $message,
-                            $from, 0, array('linkId' => $linkId1));
+                            $from, 0, array('linkId' => $linkId));
                     try {
                         $this->getLogger()->error((array) $result);
                     } catch (Exception $exc) {
