@@ -185,7 +185,7 @@ class TableGateway extends ZfTableGateway implements ServiceLocatorAwareInterfac
      * 
      * @return string
      */
-    protected function getCreateTime()
+    public function getCreateTime()
     {
         $now = new \DateTime('now');
         return $now->format('Y-m-d H:i:s');
