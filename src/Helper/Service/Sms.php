@@ -108,7 +108,7 @@ class Sms implements ServiceLocatorAwareInterface
             $apiKey = $at['apiKey'];
             $senderId = $at['senderId'] ? $at['senderId'] : null;
             $shortCode = $at['shortCode'] ? $at['shortCode'] : null;
-            $from == null;
+            $from = null;
             if ($use == 'senderId') {
                 if (!empty($senderId)) {
                     $from = $senderId;
