@@ -397,7 +397,8 @@ class TableGateway extends ZfTableGateway implements ServiceLocatorAwareInterfac
      * fields to be pulled from the joined table ('fields' key), and the join type ('type' key)
      * @return ResultsetInterface|null
      */
-    public function fetchAll($params = array(), $condition = array(), $join = FALSE, $join_params = array())
+    public function fetchAll($params = array(), $condition = array(),
+            $join = FALSE, $join_params = array(), $order = null)
     {
         $select = $this->getSlaveSql()->select();
         if (array_key_exists('fields', $params)) {
@@ -418,6 +419,9 @@ class TableGateway extends ZfTableGateway implements ServiceLocatorAwareInterfac
             
             if(!empty($condition)){
                 $select = $select->where($condition);
+            }
+            if (!empty($order)) {
+                $select = $select->order($order);
             }
             $resultset = $this->selectWith($select);
             if ($resultset->count()) {
