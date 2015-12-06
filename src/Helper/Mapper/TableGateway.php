@@ -359,12 +359,13 @@ class TableGateway extends ZfTableGateway implements ServiceLocatorAwareInterfac
      * fields to be pulled from the joined table ('fields' key), and the join type ('type' key)
      * @return EntityInterface|null
      */
-    public function fetch($id, $params = array(), $join = FALSE, $join_params = array())
+    public function fetch($id, $params = array(), $condition = array(), $join = FALSE, $join_params = array())
     {
         $select = $this->getSlaveSql()->select();
-        if( ! empty($params))
+        if (is_array($params) && array_key_exists('fields', $params)) {
             $select->columns($params['fields']);
-
+        }
+        
         if($join){
             foreach($join_params as $join_param){
                 if(isset($join_param['table']) && isset($join_param['on'])){
@@ -378,14 +379,17 @@ class TableGateway extends ZfTableGateway implements ServiceLocatorAwareInterfac
             }
         }
 
-        $select = $select->where(array($this->getTable() . '.id' => (int) $id));
+        $fetch_condition = array($this->getTable() . '.id' => $id);
+        if(is_array($condition) && !empty($condition)){
+            $fetch_condition = array_merge($fetch_condition, $condition);
+        }
+        $select = $select->where($fetch_condition);
         $resultset = $this->selectWith($select);
         if ($resultset->count()) {
             return $resultset->current();
-        } else {
-            // didn't get anything by that id
-            return null;
         }
+        
+        return null;
     }
     
     /**
@@ -400,34 +404,31 @@ class TableGateway extends ZfTableGateway implements ServiceLocatorAwareInterfac
     public function fetchAll($params = array(), $condition = array(), $join = FALSE, $join_params = array())
     {
         $select = $this->getSlaveSql()->select();
-        if (array_key_exists('fields', $params)) {
+        if (is_array($params) && array_key_exists('fields', $params)) {
             $select->columns($params['fields']);
+        }
             
-            if($join){
-                foreach($join_params as $join_param){
-                    if(isset($join_param['table']) && isset($join_param['on'])){
-                        $select->join(
-                            $join_param['table'], 
-                            $join_param['on'], 
-                            isset($join_param['fields'])?$join_param['fields']:array(), 
-                            isset($join_param['type'])?strtolower($join_param['type']):'inner' 
-                        );
-                    }
+        if($join){
+            foreach($join_params as $join_param){
+                if(isset($join_param['table']) && isset($join_param['on'])){
+                    $select->join(
+                        $join_param['table'], 
+                        $join_param['on'], 
+                        isset($join_param['fields'])?$join_param['fields']:array(), 
+                        isset($join_param['type'])?strtolower($join_param['type']):'inner' 
+                    );
                 }
             }
-            
-            if(!empty($condition)){
-                $select = $select->where($condition);
-            }
-            $resultset = $this->selectWith($select);
-            if ($resultset->count()) {
-                return $resultset;
-            } else {
-                return null;
-            }
-        } else {
-            return null;
         }
+        
+        if(is_array($condition) && !empty($condition)){
+            $select = $select->where($condition);
+        }
+        $resultset = $this->selectWith($select);
+        if ($resultset->count()) {
+            return $resultset;
+        }
+        return null;
     }
     
     /**
