@@ -70,22 +70,22 @@ class Sms implements ServiceLocatorAwareInterface
      *
      * @param string $to
      * @param string $message
-     * @param string $from
-     * @param array $params
+     * @param string $use senderId|shortCode
+     * @param array $params linkId, etc
      * @param string $gateway
      */
-    public function send($to, $message, $from = null, $params = array(),
-            $gateway = 'AfricasTalking')
+    public function send($to, $message, $use = 'senderId',
+            array $params = array(), $gateway = 'AfricasTalking')
     {
         switch ($gateway) {
             case 'AfricasTalking':
                 return $this->sendSmsViaAfricasTalkingGateway($to, $message,
-                                $from);
+                                $use, $params);
             case 'Infobip':
-                return $this->sendSingleSmsInfobip($to, $message, $from);
+                return $this->sendSingleSmsInfobip($to, $message);
             default:
                 return $this->sendSmsViaAfricasTalkingGateway($to, $message,
-                                $from);
+                                $use);
         }
     }
 
@@ -93,13 +93,13 @@ class Sms implements ServiceLocatorAwareInterface
      *
      * @param string $to
      * @param string $message
-     * @param string $from
+     * @param string $use use senderId|shortCode
      * @param array $params
      * @return type
      * @throws Exception
      */
     private function sendSmsViaAfricasTalkingGateway($to, $message,
-            $from = null, $params = array())
+            $use = 'senderId', array $params = array())
     {
         $config = $this->getConfig();
         if (isset($config['mobichurch']['africas_talking'])) {
@@ -108,20 +108,43 @@ class Sms implements ServiceLocatorAwareInterface
             $apiKey = $at['apiKey'];
             $senderId = $at['senderId'] ? $at['senderId'] : null;
             $shortCode = $at['shortCode'] ? $at['shortCode'] : null;
-            if ($from === null) {
-                if (!empty($shortCode)) {
-                    $from = $shortCode;
-                } elseif (!empty($senderId)) {
+            $from = null;
+            if ($use == 'senderId') {
+                if (!empty($senderId)) {
                     $from = $senderId;
                 }
+            } elseif ($use == 'shortCode') {
+                if (!empty($shortCode)) {
+                    $from = $shortCode;
+                }
             }
+
             // instantiate afrcias talking gateway
             $africasTalkingGateway = new AfricasTalkingGateway($username,
                     $apiKey);
             // send message
             try {
-                $result = $africasTalkingGateway->sendMessage($to, $message,
-                        $from);
+                if ($use == 'senderId') {
+                    // send message normally
+                    $result = $africasTalkingGateway->sendMessage($to, $message,
+                            $from);
+                } else {
+                    // send via short_code
+                    $linkId = null;
+                    if (array_key_exists('linkId', $params)) {
+                        $linkId = $params['linkId'];
+                    }
+                    $result = $africasTalkingGateway->sendMessage($to, $message,
+                            $from, 0, array('linkId' => $linkId));
+                    try {
+                        $this->getLogger()->error((array) $result);
+                    } catch (Exception $exc) {
+                        $this->getServiceLocator()->get('LoggerService')
+                                ->crit($exc->getMessage() . ' ' . __FILE__ . ' ' . __LINE__);
+                    }
+                    $this->result = $result;
+                    return $this;
+                }
                 $this->result = $result;
                 return $this;
             } catch (Exception $exc) {
@@ -140,11 +163,11 @@ class Sms implements ServiceLocatorAwareInterface
      *
      * @param int $to
      * @param string $message
-     * @param string $from
      * @return \Zend\Http\Response
      */
-    public function sendSingleSmsInfobip($to, $message, $from = '')
+    public function sendSingleSmsInfobip($to, $message)
     {
+        $from = null;
         // initialize variables
         $result = $this->initializeInfobipVariables();
         if ($result instanceof Response) {

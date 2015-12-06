@@ -7,6 +7,7 @@
 namespace Helper\Mapper\Junction;
 
 use Helper\Mapper\TableGateway;
+use Zend\Db\Sql\Select;
 
 /**
  * Description of UserHasRoleMapper
@@ -15,6 +16,11 @@ use Helper\Mapper\TableGateway;
  */
 class UserHasRoleMapper extends TableGateway
 {
+    /**
+     *
+     * @var array
+     */
+    protected $roles = [];
 
     /**
      *
@@ -34,6 +40,35 @@ class UserHasRoleMapper extends TableGateway
             return true;
         }
         return false;
+    }
+
+    /**
+     *
+     * @param int $userId
+     * @param string $roleName
+     * @return boolean
+     *
+     */
+    public function userHasRoleName($userId, $roleName)
+    {
+        if (count($this->roles)) {
+            return in_array($roleName, $this->roles);
+        }
+        $sql = $this->getSlaveSql();
+        $select = $sql->select()
+                ->columns(array('user_id', 'role_id'))
+                ->where(array('user_id' => $userId))
+                ->join('role', 'user.role_id=role.id', array('name'),
+                Select::JOIN_INNER);
+        $results = $sql->prepareStatementForSqlObject($select)
+                ->execute();
+        foreach ($results as $row) {
+            $this->roles[] = $row['name'];
+        }
+        if (!count($this->roles)) {
+            return false;
+        }
+        return in_array($roleName, $this->roles);
     }
 
 }

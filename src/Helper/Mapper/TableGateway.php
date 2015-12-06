@@ -185,7 +185,7 @@ class TableGateway extends ZfTableGateway implements ServiceLocatorAwareInterfac
      * 
      * @return string
      */
-    protected function getCreateTime()
+    public function getCreateTime()
     {
         $now = new \DateTime('now');
         return $now->format('Y-m-d H:i:s');
@@ -354,6 +354,7 @@ class TableGateway extends ZfTableGateway implements ServiceLocatorAwareInterfac
      *
      * @param int $id
      * @param array $params
+     * @param array $condition tables select conditions
      * @param bool $join Flag on whether to join with related tables or not. Defaults to FALSE
      * @param array $join_params Array containing: table to be joined ('table' key), joining condition ('on' key), 
      * fields to be pulled from the joined table ('fields' key), and the join type ('type' key)
@@ -401,7 +402,8 @@ class TableGateway extends ZfTableGateway implements ServiceLocatorAwareInterfac
      * fields to be pulled from the joined table ('fields' key), and the join type ('type' key)
      * @return ResultsetInterface|null
      */
-    public function fetchAll($params = array(), $condition = array(), $join = FALSE, $join_params = array())
+    public function fetchAll($params = array(), $condition = array(),
+            $join = FALSE, $join_params = array(), $order = null)
     {
         $select = $this->getSlaveSql()->select();
         if (is_array($params) && array_key_exists('fields', $params)) {
@@ -423,6 +425,9 @@ class TableGateway extends ZfTableGateway implements ServiceLocatorAwareInterfac
         
         if(is_array($condition) && !empty($condition)){
             $select = $select->where($condition);
+        }
+        if (!empty($order)) {
+            $select = $select->order($order);
         }
         $resultset = $this->selectWith($select);
         if ($resultset->count()) {

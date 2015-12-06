@@ -1,7 +1,7 @@
 <?php
 namespace Helper\AfricasTalking;
 
-use Application\AfricasTalking\AfricasTalkingGatewayException;
+use Helper\AfricasTalking\AfricasTalkingGatewayException;
 
 /*
 
