@@ -7,9 +7,6 @@
 namespace Helper\Mapper\Junction;
 
 use Helper\Mapper\Junction\UserHasRoleMapper;
-use Zend\Stdlib\Hydrator\ClassMethods;
-use Zend\Db\ResultSet\HydratingResultSet;
-use Application\Entity\Junction\UserHasRole;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
@@ -21,14 +18,10 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 class UserHasRoleMapperFactory implements FactoryInterface
 {
 
-    
-    
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        $resultSetPrototype = new HydratingResultSet(new ClassMethods(true),
-                new UserHasRole());
         $userHasRoleMapper = new UserHasRoleMapper('user_has_role',
-                $serviceLocator->get('DbAdapter'), null, $resultSetPrototype);
+                $serviceLocator->get('DbAdapter'), null, null);
         return $userHasRoleMapper;
     }
 
