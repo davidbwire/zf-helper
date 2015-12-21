@@ -35,5 +35,25 @@ class RoleMapper extends TableGateway
             return null;
         }
     }
+    /**
+     *
+     * @param string $name
+     * @return int or null
+     */
+    public function getRoleIdByName($name)
+    {
+        $sql = $this->getSlaveSql();
+        $select = $sql
+                ->select()
+                ->columns(array('id'))
+                ->where(array('name' => $name));
+        $result = $sql->prepareStatementForSqlObject($select)
+                ->execute();
+        if ($result->count()) {
+            return $result->current()['id'];
+        } else {
+            return null;
+        }
+    }
 
 }
