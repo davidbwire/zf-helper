@@ -16,6 +16,7 @@ use Zend\Db\Sql\Select;
  */
 class UserHasRoleMapper extends TableGateway
 {
+
     /**
      *
      * @var array
@@ -26,6 +27,7 @@ class UserHasRoleMapper extends TableGateway
      *
      * @param int $userId
      * @param string $roleId
+     * @deprecated since version number
      * @return boolean
      */
     public function hasRole($userId, $roleId)
@@ -34,9 +36,23 @@ class UserHasRoleMapper extends TableGateway
         $select = $sql->select()
                 ->columns(array('user_id', 'role_id'))
                 ->where(array('user_id' => $userId, 'role_id' => $roleId));
-        $results = $sql->prepareStatementForSqlObject($select)
+        $result = $sql->prepareStatementForSqlObject($select)
                 ->execute();
-        if ($results->count()) {
+        if ($result->count()) {
+            return true;
+        }
+        return false;
+    }
+
+    public function userHasRoleId($userId, $roleId)
+    {
+        $sql = $this->getSlaveSql();
+        $select = $sql->select()
+                ->columns(array('user_id', 'role_id'))
+                ->where(array('user_id' => $userId, 'role_id' => $roleId));
+        $result = $sql->prepareStatementForSqlObject($select)
+                ->execute();
+        if ($result->count()) {
             return true;
         }
         return false;
@@ -69,6 +85,26 @@ class UserHasRoleMapper extends TableGateway
             return false;
         }
         return in_array($roleName, $this->roles);
+    }
+    /**
+     * Grant a specific role id to user
+     * 
+     * @param int $userId
+     * @param int $roleId
+     * @return boolean
+     */
+    public function grantRole($userId, $roleId)
+    {
+        $sql = $this->getSlaveSql();
+        $insert = $sql->insert()
+                ->columns(array('user_id', 'role_id'))
+                ->values(array('user_id' => $userId, 'role_id' => $roleId));
+        $result = $sql->prepareStatementForSqlObject($insert)
+                ->execute();
+        if ($result->count()) {
+            return $this->userHasRoleId($userId, $roleId);
+        }
+        return false;
     }
 
 }
