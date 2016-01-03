@@ -74,7 +74,7 @@ class UserHasRoleMapper extends TableGateway
         $select = $sql->select()
                 ->columns(array('user_id', 'role_id'))
                 ->where(array('user_id' => $userId))
-                ->join('role', 'user.role_id=role.id', array('name'),
+                ->join('role', 'user_has_role.role_id=role.id', array('name'),
                 Select::JOIN_INNER);
         $results = $sql->prepareStatementForSqlObject($select)
                 ->execute();
