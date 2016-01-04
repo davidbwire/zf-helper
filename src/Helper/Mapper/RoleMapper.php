@@ -38,7 +38,7 @@ class RoleMapper extends TableGateway
     /**
      *
      * @param string $name
-     * @return int or null
+     * @return int|null
      */
     public function getRoleIdByName($name)
     {
