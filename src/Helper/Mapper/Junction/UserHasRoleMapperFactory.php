@@ -22,6 +22,9 @@ class UserHasRoleMapperFactory implements FactoryInterface
     {
         $userHasRoleMapper = new UserHasRoleMapper('user_has_role',
                 $serviceLocator->get('DbAdapter'), null, null);
+        // inject role mapper
+        $userHasRoleMapper->setRoleMapper(
+                $serviceLocator->get('HelperRoleMapper'));
         return $userHasRoleMapper;
     }
 

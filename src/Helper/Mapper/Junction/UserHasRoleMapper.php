@@ -8,6 +8,7 @@ namespace Helper\Mapper\Junction;
 
 use Helper\Mapper\TableGateway;
 use Zend\Db\Sql\Select;
+use Helper\Mapper\RoleMapper;
 
 /**
  * Description of UserHasRoleMapper
@@ -22,6 +23,12 @@ class UserHasRoleMapper extends TableGateway
      * @var array
      */
     protected $roles = [];
+
+    /**
+     *
+     * @var \Helper\Mapper\RoleMapper
+     */
+    protected $roleMapper;
 
     /**
      *
@@ -86,6 +93,7 @@ class UserHasRoleMapper extends TableGateway
         }
         return in_array($roleName, $this->roles);
     }
+
     /**
      * Grant a specific role id to user
      * 
@@ -105,6 +113,38 @@ class UserHasRoleMapper extends TableGateway
             return $this->userHasRoleId($userId, $roleId);
         }
         return false;
+    }
+
+    /**
+     * Given a role.name return role.id
+     * 
+     * @param string $roleName
+     * @return int|null
+     */
+    public function getRoleIdByRoleName($roleName)
+    {
+        return $this->getRoleMapper()
+                        ->getRoleIdByName($roleName);
+    }
+
+    /**
+     *
+     * @return \Helper\Mapper\RoleMapper
+     */
+    public function getRoleMapper()
+    {
+        return $this->roleMapper;
+    }
+
+    /**
+     *
+     * @param RoleMapper $roleMapper
+     * @return \Helper\Mapper\Junction\UserHasRoleMapper
+     */
+    public function setRoleMapper(RoleMapper $roleMapper)
+    {
+        $this->roleMapper = $roleMapper;
+        return $this;
     }
 
 }
