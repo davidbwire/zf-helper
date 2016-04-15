@@ -60,6 +60,11 @@ class Logger extends ZfLogger
             $this->file = $file;
         }
         $writerFile = $this->logPath . $this->file . '.txt';
+
+        if (!is_writable($this->logPath) || !is_writable($this->file)) {
+            chmod($this->logPath, 0777);
+            chmod($writerFile, 0777);
+        }
         if (is_writable($writerFile)) {
             return $writerFile;
         } else {
