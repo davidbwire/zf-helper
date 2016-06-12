@@ -25,8 +25,8 @@ class PageMapperFactory implements FactoryInterface
     {
         $resultSetPrototype = new HydratingResultSet(new ClassMethods(true),
                 new Page());
-        $pageMapper = new PageMapper('page', $serviceLocator->get('DbAdapter'),
-                null, $resultSetPrototype);
+        $pageMapper = new PageMapper('article',
+                $serviceLocator->get('DbAdapter'), null, $resultSetPrototype);
         return $pageMapper;
     }
 
