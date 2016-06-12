@@ -7,10 +7,7 @@
 namespace Helper\Mapper;
 
 use Zend\ServiceManager\FactoryInterface;
-use Application\Entity\Page;
-use Zend\Stdlib\Hydrator\ClassMethods;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use Zend\Db\ResultSet\HydratingResultSet;
 use Helper\Mapper\PageMapper;
 
 /**
@@ -23,10 +20,8 @@ class PageMapperFactory implements FactoryInterface
 
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        $resultSetPrototype = new HydratingResultSet(new ClassMethods(true),
-                new Page());
         $pageMapper = new PageMapper('article',
-                $serviceLocator->get('DbAdapter'), null, $resultSetPrototype);
+                $serviceLocator->get('DbAdapter'), null);
         return $pageMapper;
     }
 
