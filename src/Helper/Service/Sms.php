@@ -154,7 +154,7 @@ class Sms implements ServiceLocatorAwareInterface
         } else {
             // log
             $logger = $this->getServiceLocator()->get('LoggerService');
-            $logger->err('Missing parameters to connect to infobip api.');
+            $logger->err('Missing parameters to connect to AfricasTalking gateway.');
             throw new Exception('Missing parameters to connect to AfricasTalking gateway.');
         }
     }
