@@ -8,6 +8,7 @@ namespace Helper\Controller\Plugin;
 
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
+use Helper\Controller\Plugin\HashId;
 
 /**
  * Description of HashIdFactory
@@ -16,6 +17,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  */
 class HashIdFactory implements FactoryInterface
 {
+
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
         $hashId = new HashId($serviceLocator);

@@ -38,12 +38,13 @@ class HashId extends AbstractPlugin
 
     public function __construct(ServiceLocatorInterface $controllerPluginManager)
     {
-        // @todo fix composer loading
-        require('./vendor/hashids/hashids/lib/Hashids/HashGenerator.php');
-        require('./vendor/hashids/hashids/lib/Hashids/Hashids.php');
-        $this->serviceLocator = $controllerPluginManager->getServiceLocator();
+
+        $this->serviceLocator = $controllerPluginManager
+                ->getServiceLocator();
         $config = $this->serviceLocator->get('Config');
         if (!isset($config['hashids']['salt'])) {
+            $controllerPluginManager->get('logger')
+                    ->crit('Hashing salt has not been set.');
             throw new \RuntimeException('Hashing salt has not been set.');
         }
         // we have a salt, persist it
