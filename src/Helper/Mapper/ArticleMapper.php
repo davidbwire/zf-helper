@@ -9,11 +9,11 @@ namespace Helper\Mapper;
 use Helper\Mapper\TableGateway;
 
 /**
- * Description of PageMapper
+ * Description of ArticleMapper
  *
  * @author Bitmarshals Digital <sanicms@bitmarshals.co.ke>
  */
-class PageMapper extends TableGateway
+class ArticleMapper extends TableGateway
 {
     public function __construct($table,
             \Zend\Db\Adapter\AdapterInterface $adapter, $features = null,

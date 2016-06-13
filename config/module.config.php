@@ -101,7 +101,7 @@ return array(
             'HelperHistoryLoginMapper' => '\Helper\Mapper\HistoryLoginMapperFactory',
             'HelperHistoryFailedLoginMapper' => '\Helper\Mapper\HistoryFailedLoginMapperFactory',
             'HelperRoleMapper' => '\Helper\Mapper\RoleMapperFactory',
-            'HelperPageMapper' => '\Helper\Mapper\PageMapperFactory',
+            'HelperArticleMapper' => '\Helper\Mapper\ArticleMapperFactory',
             'HelperZfcUserListener' => '\Member\EventManager\ZfcUserListenerFactory',
             'HelperGoalioForgotPasswordListener' => '\Helper\Goalio\EventManager\GoalioForgotPasswordListenerFactory'
         ],

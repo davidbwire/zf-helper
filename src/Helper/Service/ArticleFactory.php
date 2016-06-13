@@ -13,12 +13,12 @@ use Zend\ServiceManager\FactoryInterface;
  *
  * @author Bitmarshals Digital <sanicms@bitmarshals.co.ke>
  */
-class PageFactory implements FactoryInterface
+class ArticleFactory implements FactoryInterface
 {
 
     public function createService(\Zend\ServiceManager\ServiceLocatorInterface $serviceLocator)
     {
-        $page = new Page();
+        $page = new ArticleService();
         $page->setPageMapper($serviceLocator->get('\Helper\Mapper\PageMapper'))
                 ->setNavigation($serviceLocator->get('Navigation'))
                 ->setRequest($serviceLocator->get('Request'));

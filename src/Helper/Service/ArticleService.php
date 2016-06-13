@@ -8,14 +8,14 @@ namespace Helper\Service;
 
 use Zend\Navigation\Navigation;
 use Zend\Http\Request;
-use Helper\Mapper\PageMapper;
+use Helper\Mapper\ArticleMapper;
 
 /**
  * Used to generate and save pages
  *
  * @author Bitmarshals Digital <sanicms@bitmarshals.co.ke>
  */
-class Page
+class ArticleService
 {
 
     /**
@@ -32,7 +32,7 @@ class Page
 
     /**
      *
-     * @var \Helper\Mapper\PageMapper
+     * @var \Helper\Mapper\ArticleMapper
      */
     protected $pageMapper;
 
@@ -84,7 +84,7 @@ class Page
     /**
      *
      * @param \Zend\Navigation\Navigation $navigation
-     * @return \Helper\Service\Page
+     * @return \Helper\Service\ArticleService
      */
     public function setNavigation(Navigation $navigation)
     {
@@ -103,10 +103,10 @@ class Page
 
     /**
      *
-     * @param \Helper\Mapper\PageMapper $pageMapper
-     * @return \Helper\Service\Page
+     * @param \Helper\Mapper\ArticleMapper $pageMapper
+     * @return \Helper\Service\ArticleService
      */
-    public function setPageMapper(PageMapper $pageMapper)
+    public function setPageMapper(ArticleMapper $pageMapper)
     {
         $this->contentMapper = $pageMapper;
         return $this;
@@ -114,7 +114,7 @@ class Page
 
     /**
      *
-     * @return \Helper\Mapper\PageMapper
+     * @return \Helper\Mapper\ArticleMapper
      */
     public function getPageMapper()
     {
@@ -124,7 +124,7 @@ class Page
     /**
      *
      * @param \Zend\Http\Request $request
-     * @return \Helper\Service\Page
+     * @return \Helper\Service\ArticleService
      */
     public function setRequest(Request $request)
     {

@@ -8,19 +8,19 @@ namespace Helper\Mapper;
 
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use Helper\Mapper\PageMapper;
+use Helper\Mapper\ArticleMapper;
 
 /**
- * Description of PageMapperFactory
+ * Description of ArticleMapperFactory
  *
  * @author Bitmarshals Digital <sanicms@bitmarshals.co.ke>
  */
-class PageMapperFactory implements FactoryInterface
+class ArticleMapperFactory implements FactoryInterface
 {
 
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        $pageMapper = new PageMapper('article',
+        $pageMapper = new ArticleMapper('article',
                 $serviceLocator->get('DbAdapter'), null);
         return $pageMapper;
     }
