@@ -3,6 +3,9 @@
 return array(
     'controllers' => array(
         'invokables' => array(),
+        'factories' => [
+            'HelperGoalioIndexController' => '\Helper\Goalio\Controller\IndexControllerFactory'
+        ]
     ),
     'router' => array(
         'routes' => array(
@@ -49,12 +52,23 @@ return array(
             /**
              * Aliases for goalio password recovery
              */
+            'forgot_password' => array(
+                'type' => 'Literal',
+                'options' => array(
+                    'route' => '/forgot-password',
+                    'defaults' => array(
+                        'controller' => 'goalioforgotpassword_forgot',
+                        'action' => 'forgot',
+                    ),
+                ),
+            ),
             'reset_password' => array(
                 'type' => 'Segment',
                 'options' => array(
                     'route' => '/reset-password/:hashed_user_id/:token',
                     'defaults' => array(
-                        'controller' => 'GuestIndexController',
+                        // route via HelperGoalioIndexController to decode
+                        'controller' => 'HelperGoalioIndexController',
                         'action' => 'resetPassword',
                     ),
                     'constraints' => array(
@@ -93,6 +107,9 @@ return array(
         ],
     ],
     'controller_plugins' => [
+        'aliased' => [
+            'logger' => 'log'
+        ],
         'factories' => [
             'log' => '\Helper\Controller\Plugin\LoggerFactory',
             'hashid' => '\Helper\Controller\Plugin\HashIdFactory',
