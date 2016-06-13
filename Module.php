@@ -64,6 +64,11 @@ class Module implements ViewHelperProviderInterface,
                 $controller->layout($config['module_layouts'][$moduleNamespace]);
             }
         }, 100);
+        $sharedEventManager->attach('GoalioForgotPassword\Service\Password',
+                'sendProcessForgotRequest',
+                function() {
+            
+        });
     }
 
     public function getViewHelperConfig()
