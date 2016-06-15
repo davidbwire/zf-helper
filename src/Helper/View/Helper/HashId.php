@@ -38,10 +38,6 @@ class HashId extends AbstractHelper
 
     public function __construct(ServiceLocatorInterface $helperPluginManager)
     {
-        // @todo fix composer loading
-        require('./vendor/hashids/hashids/lib/Hashids/HashGenerator.php');
-        require('./vendor/hashids/hashids/lib/Hashids/Hashids.php');
-
         $this->serviceLocator = $helperPluginManager->getServiceLocator();
         $config = $this->serviceLocator->get('Config');
         if (!isset($config['hashids']['salt'])) {
