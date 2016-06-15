@@ -52,13 +52,13 @@ return array(
             /**
              * Aliases for goalio password recovery
              */
-            'forgot_password' => array(
+            'request_password_reset' => array(
                 'type' => 'Literal',
                 'options' => array(
                     'route' => '/forgot-password',
                     'defaults' => array(
-                        'controller' => 'goalioforgotpassword_forgot',
-                        'action' => 'forgot',
+                        'controller' => 'HelperGoalioIndexController',
+                        'action' => 'requestResetPasswordLink',
                     ),
                 ),
             ),
@@ -70,11 +70,7 @@ return array(
                         // route via HelperGoalioIndexController to decode
                         'controller' => 'HelperGoalioIndexController',
                         'action' => 'resetPassword',
-                    ),
-                    'constraints' => array(
-                        'hashed_user_id' => '[A-Za-z0-9]+',
-                        'token' => '[A-F0-9]+',
-                    ),
+                    )
                 ),
             ),
         ),
@@ -93,7 +89,15 @@ return array(
     'service_manager' => [
         'invokables' => [
             'LoggerService' => '\Helper\Service\Logger',
-            'SmsService' => '\Helper\Service\Sms'
+            'SmsService' => '\Helper\Service\Sms',
+            'SimpleMailer' => '\Helper\Service\SimpleMailerFactory'
+        ],
+        'aliases' => [
+            'Logger' => 'LoggerService',
+            'SimpleMailerService' => 'SimpleMailer',
+        ],
+        'shared' => [
+            'SimpleMailer' => false,
         ],
         'factories' => [
             'DefaultNavigation' => '\Zend\Navigation\Service\DefaultNavigationFactory',
@@ -107,7 +111,7 @@ return array(
         ],
     ],
     'controller_plugins' => [
-        'aliased' => [
+        'aliases' => [
             'logger' => 'log'
         ],
         'factories' => [
