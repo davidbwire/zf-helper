@@ -102,8 +102,8 @@ class Sms implements ServiceLocatorAwareInterface
             $use = 'senderId', array $params = array())
     {
         $config = $this->getConfig();
-        if (isset($config['mobichurch']['africas_talking'])) {
-            $at = $config['mobichurch']['africas_talking'];
+        if (isset($config['app']['africas_talking'])) {
+            $at = $config['app']['africas_talking'];
             $username = $at['username'];
             $apiKey = $at['apiKey'];
             $senderId = $at['senderId'] ? $at['senderId'] : null;
@@ -201,8 +201,8 @@ class Sms implements ServiceLocatorAwareInterface
     protected function initializeInfobipVariables()
     {
         $config = $this->getConfig();
-        if (isset($config['mobichurch']['infobip'])) {
-            $aInfobip = $config['mobichurch']['infobip'];
+        if (isset($config['app']['infobip'])) {
+            $aInfobip = $config['app']['infobip'];
             $this->defaultSenderIdInfobip = $aInfobip['defaultSenderId'];
             $this->userNameInfobip = $aInfobip['username'];
             $this->apiRootInfobip = $aInfobip['apiRoot'];
