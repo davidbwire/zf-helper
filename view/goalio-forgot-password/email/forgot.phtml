@@ -1,7 +1,0 @@
-
-<?php echo $this->translate('You have received this email because you initiated to reset your password with us. To continue with the process, please click the link below:'); ?>
-
-<?php echo $this->serverUrl($this->url('reset_password',
-                array('hashed_user_id' => $this->hashId($this->record->getUserId()),
-            'token' => $this->record->getRequestKey())));
-?>
