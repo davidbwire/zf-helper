@@ -84,6 +84,7 @@ return array(
         ),
         'template_map' => array(
             'zfc-user/user/login' => __DIR__ . '/../view/zfc-user/user/login.phtml',
+            'goalio-forgot-password/forgot/forgot' => __DIR__ . '/../view/helper/simple-mailer/request_password_reset.phtml'
         ),
     ),
     'service_manager' => [
