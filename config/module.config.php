@@ -84,7 +84,9 @@ return array(
         ),
         'template_map' => array(
             'zfc-user/user/login' => __DIR__ . '/../view/zfc-user/user/login.phtml',
-            'goalio-forgot-password/forgot/forgot' => __DIR__ . '/../view/helper/simple-mailer/request_password_reset.phtml'
+            'goalio-forgot-password/forgot/forgot' => __DIR__ . '/../view/helper/simple-mailer/request_password_reset.phtml',
+            'goalio-forgot-password/forgot/reset' => __DIR__ . '/../view/helper/simple-mailer/reset_password.phtml',
+            'goalio-forgot-password/forgot/passwordchanged' => __DIR__ . '/../view/helper/simple-mailer/password_changed.phtml',
         ),
     ),
     'service_manager' => [
