@@ -21,6 +21,8 @@ class SimpleMailerFactory implements FactoryInterface
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
         $simpleMailer = new SimpleMailer($serviceLocator->get('Config'),
+                // use view manager fro $sm as it has view resolvers
+                $serviceLocator->get('ViewManager'),
                 $serviceLocator->get('Logger'));
         return $simpleMailer;
     }

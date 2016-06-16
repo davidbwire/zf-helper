@@ -51,9 +51,17 @@ class SimpleMailer
      */
     protected $attachmentsCarrier;
 
-    public function __construct($config, LoggerInterface $logger)
+    /**
+     *
+     * @var ViewManager
+     */
+    protected $viewManager;
+
+    public function __construct($config, ViewManager $viewManager,
+            LoggerInterface $logger)
     {
         $this->logger = $logger;
+        $this->viewManager = $viewManager;
 
         if (!isset($config['simple_mailer'])) {
             $this->logger->crit('Simple mailer is not set.');
@@ -158,23 +166,26 @@ class SimpleMailer
     /**
      * Processes a view script and adds it to the attachments carrier
      *
-     * @param  Model $viewModelWithTemplate The ViewModel must have the template
+     * @param  ViewModel $viewModelWithTemplate The ViewModel must have the template
      * as an option in order to be valid.
-     * 
+     *
      * @param  null|array|Traversable $viewModelValues Values to use when rendering. If none
      * provided, uses those in the composed variables container.
-     * 
+     * @param ViewManager $viewManager Ensure it has view resolvers
      * @return MimeMessage
-     * 
      * @throws Exception\DomainException if a ViewModel is passed, but does not
      *                                   contain a template option.
      * @throws Exception\InvalidArgumentException if the values passed are not
      *                                            an array or ArrayAccess object
      * @throws Exception\RuntimeException if the template cannot be rendered
+     * @throws InvalidArgumentException
      */
     public function attachHtmlFromViewModel(ViewModel $viewModelWithTemplate,
-            ViewManager $viewManager, $viewModelValues = null)
+            $viewModelValues = null, ViewManager $viewManager = null)
     {
+        if ($viewManager === null) {
+            $viewManager = $this->viewManager;
+        }
         if ($viewModelValues !== null) {
             throw new InvalidArgumentException('View model values cannot be '
             . 'set at the momement. Feature not implemented.');
