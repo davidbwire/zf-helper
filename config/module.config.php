@@ -93,7 +93,6 @@ return array(
         'invokables' => [
             'LoggerService' => '\Helper\Service\Logger',
             'SmsService' => '\Helper\Service\Sms',
-            'SimpleMailer' => '\Helper\Service\SimpleMailerFactory'
         ],
         'aliases' => [
             'Logger' => 'LoggerService',
@@ -103,6 +102,7 @@ return array(
             'SimpleMailer' => false,
         ],
         'factories' => [
+            'SimpleMailer' => '\Helper\Service\SimpleMailerFactory',
             'DefaultNavigation' => '\Zend\Navigation\Service\DefaultNavigationFactory',
             'HelperUserHasRoleMapper' => '\Helper\Mapper\Junction\UserHasRoleMapperFactory',
             'HelperHistoryLoginMapper' => '\Helper\Mapper\HistoryLoginMapperFactory',
