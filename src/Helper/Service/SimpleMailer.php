@@ -14,7 +14,6 @@ use Zend\Mime\Part as MimePart;
 use Zend\Mime\Mime;
 use RuntimeException;
 use Zend\View\Model\ViewModel;
-use Zend\View\Renderer\PhpRenderer;
 use Zend\Mvc\View\Http\ViewManager;
 use Zend\Mime\Message as MimeMessage;
 use Exception;
@@ -176,6 +175,10 @@ class SimpleMailer
     public function attachHtmlFromViewModel(ViewModel $viewModelWithTemplate,
             ViewManager $viewManager, $viewModelValues = null)
     {
+        if ($viewModelValues !== null) {
+            throw new InvalidArgumentException('View model values cannot be '
+            . 'set at the momement. Feature not implemented.');
+        }
         $phpRendererWithResolver = $viewManager->getRenderer();
         $viewModelWithTemplate->setTerminal(false);
         $htmlContent = $phpRendererWithResolver
