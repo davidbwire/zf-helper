@@ -94,6 +94,7 @@ class IndexController extends AbstractActionController
 
         $request = $this->getRequest();
         $form = $this->getForgotForm();
+        $vm = new ViewModel();
 
         if ($request->isPost()) {
             $form->setData($this->getRequest()->getPost());
@@ -123,7 +124,7 @@ class IndexController extends AbstractActionController
                             'user_password_reset');
 
                     // create a viewmodel and make sure it has a template
-                    $viewModelEmail = new ViewModel();
+                    $viewModelEmail = $vm;
                     $viewModelEmail->setTemplate(
                             'helper/simple-mailer/email_template_reset_password');
                     $viewModelEmail->requestKey = $aData['request_key'];
@@ -140,12 +141,11 @@ class IndexController extends AbstractActionController
                 // tell user that the password has been sent
                 $vm->setTemplate('helper/simple-mailer/password_sent');
                 return $vm;
-            } else {
-                $this->flashMessenger()
-                        ->addMessage('The form is invalid.');
-                return $this->redirect()->refresh();
             }
         }
+        $vm->forgotForm = $form;
+        $vm->setTemplate('helper/simple-mailer/request_password_reset');
+        return $vm;
     }
 
     /**
