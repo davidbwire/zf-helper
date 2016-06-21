@@ -118,6 +118,14 @@ class FileUploadService
         // FileInput validators are run, but not the filters
         if ($inputFilter->isValid()) {
             // This is when the FileInput filters are run.
+            /*
+              ["file" => ['name' => 'Certificate-of-Incorporation.pdf',
+              'type' => "application/x-pdf",
+              "tmp_name" => "./data/uploads/logo_57687dc1069ae.pdf",
+              "error" => 0,
+              "size" => 492210]]
+             *
+             */
             return $inputFilter->getValues();
         } else {
             $errors = [];
