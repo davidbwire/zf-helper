@@ -102,6 +102,7 @@ return array(
             'SimpleMailer' => false,
         ],
         'factories' => [
+            'FileUploadService' => '\Helper\Service\FileUploadServiceFactory',
             'SimpleMailer' => '\Helper\Service\SimpleMailerFactory',
             'DefaultNavigation' => '\Zend\Navigation\Service\DefaultNavigationFactory',
             'HelperUserHasRoleMapper' => '\Helper\Mapper\Junction\UserHasRoleMapperFactory',

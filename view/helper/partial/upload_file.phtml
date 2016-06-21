@@ -1,0 +1,34 @@
+
+<div class="row">
+    <div class="col-sm-12">
+        <?php
+        if ($this->userMessage) {
+            ?>
+                <p><?= $this->userMessage ?></p> 
+            <?php
+        }
+        ?>
+    </div>
+    <div class="col-xs-6">
+
+    </div>
+    <div class="col-xs-6">
+
+    </div>
+</div>
+
+<?php
+if ($this->logo) {
+    echo "<img src='{$this->logo}'>";
+}
+$fileUploadForm = $this->fileUploadForm;
+$fileUploadForm->prepare();
+echo $this->form()->openTag($fileUploadForm);
+echo $this->formRow($fileUploadForm->get('file'));
+?>
+<div class="col-sm-12 vertical-tab-sm"></div>
+<?php
+echo $this->formSubmit($fileUploadForm->get('submit'));
+?>
+<?php
+echo $this->form()->closeTag($fileUploadForm);
