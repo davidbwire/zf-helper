@@ -124,4 +124,12 @@ return array(
             'AssignRole' => '\Helper\Controller\Plugin\AssignRoleFactory',
         ],
     ],
+    'view_helpers' => [
+        'aliases' => [
+            'RenderImage' => \Helper\View\Helper\RenderImage::class,
+        ],
+        'factories' => [
+            \Helper\View\Helper\RenderImage::class => Helper\View\Helper\RenderImageFactory::class
+        ]
+    ]
 );
