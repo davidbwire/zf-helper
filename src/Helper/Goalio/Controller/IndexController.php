@@ -17,6 +17,10 @@ use Zend\Mime\Part as MimePart;
 use GoalioForgotPassword\Form\Forgot;
 use Zend\View\Model\ViewModel;
 use Helper\Service\SimpleMailer;
+use Zend\Validator\Digits as DigitsValidator;
+use Zend\I18n\Validator\PhoneNumber as PhoneNumberValidator;
+use Zend\I18n\Validator\IsInt as IsIntValidator;
+use Helper\Util\PasswordManager;
 
 /**
  * Description of IndexController
@@ -88,13 +92,45 @@ class IndexController extends AbstractActionController
     public function requestResetPasswordLinkAction()
     {
 
+
+        $vm = new ViewModel();
+
         $goalioPasswordService = $this->getPasswordService();
         $goalioPasswordService->cleanExpiredForgotRequests();
         $sl = $this->serviceLocator;
 
         $request = $this->getRequest();
         $form = $this->getForgotForm();
-        $vm = new ViewModel();
+        // remove the + sign
+        $emailOrPhone = str_replace('+', '', $this->params()->fromPost('email'));
+        $digitsValidator = new DigitsValidator();
+        $isProbablyPhone = $digitsValidator->isValid($emailOrPhone);
+        if ($isProbablyPhone) {
+            $phonevalidator = new PhoneNumberValidator(['country' => 'KE',
+                'allowed_types' => ['mobile'], 'allow_possible' => true]);
+            $passWordManager = new PasswordManager($sl->get('DbAdapter'),
+                    $sl->get('Logger'));
+
+            $userMapper = $sl->get('ApplicationUserMapper');
+            $userId = $userMapper->getUserIdByUsername($emailOrPhone);
+            if ($userId && $phonevalidator->isValid((int) $emailOrPhone)) {
+                $plainTextPassword = $passWordManager->generatePlainTextPassword(6);
+                $updatePassResult = $passWordManager
+                        ->updatePassword($userId, $plainTextPassword);
+                if ($updatePassResult === true) {
+                    $smsService = $sl->get('SmsService');
+                    $smsService->send('254' . (int) $emailOrPhone,
+                            'Your password has been reset. '
+                            . 'Your new password is ' . $plainTextPassword);
+                    $this->flashMessenger()->addSuccessMessage('Your password has been sent to you.');
+                } else {
+                    $this->flashMessenger()->addErrorMessage('Password reset failed.');
+                }
+            } else {
+                $this->flashMessenger()->addErrorMessage('Password reset failed.');
+            }
+            return $this->redirect()->toRoute('login');
+        }
 
         if ($request->isPost()) {
             $form->setData($this->getRequest()->getPost());
