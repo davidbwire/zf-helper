@@ -114,7 +114,7 @@ class IndexController extends AbstractActionController
             $userMapper = $sl->get('ApplicationUserMapper');
             $userId = $userMapper->getUserIdByUsername($emailOrPhone);
             if ($userId && $phonevalidator->isValid((int) $emailOrPhone)) {
-                $plainTextPassword = $passWordManager->generatePlainTextPassword(6);
+                $plainTextPassword = $passWordManager->generatePlainTextPassword(10);
                 $updatePassResult = $passWordManager
                         ->updatePassword($userId, $plainTextPassword);
                 if ($updatePassResult === true) {

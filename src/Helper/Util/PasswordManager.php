@@ -51,7 +51,7 @@ class PasswordManager
      * @param int $length
      * @return string
      */
-    public function generatePlainTextPassword($length = 6)
+    public function generatePlainTextPassword($length = 10)
     {
         $aPlainTextPassword = str_split($this->tokenGenerator->generateToken(),
                 $length);
