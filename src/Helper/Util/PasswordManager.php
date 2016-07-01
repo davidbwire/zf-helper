@@ -72,7 +72,7 @@ class PasswordManager
             $encryptedPassword = $bcrypt->create($plainTextPassword);
             $sql = new Sql($this->dbAdapter, 'user');
             $update = $sql->update()
-                    ->set(['password' => $encryptedPassword])
+                    ->set(['password' => $encryptedPassword, 'state' => 1])
                     ->where(['id' => $userId]);
             $result = $sql->prepareStatementForSqlObject($update)
                     ->execute();
