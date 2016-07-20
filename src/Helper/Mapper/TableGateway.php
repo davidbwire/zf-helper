@@ -87,7 +87,7 @@ class TableGateway extends ZfTableGateway implements ServiceLocatorAwareInterfac
             return null;
         }
     }
-    
+
     /**
      *
      * @param array $params
@@ -98,7 +98,7 @@ class TableGateway extends ZfTableGateway implements ServiceLocatorAwareInterfac
         $select = $this->getSlaveSql()->select();
         if (array_key_exists('fields', $params)) {
             $select->columns($params['fields']);
-            if(!empty($condition)){
+            if (!empty($condition)) {
                 $select = $select->where($condition);
             }
             $resultset = $this->selectWith($select);
@@ -120,16 +120,16 @@ class TableGateway extends ZfTableGateway implements ServiceLocatorAwareInterfac
     public function add($model)
     {
         if (is_array($model)) {
-            if ((isset($model['create_time']) && empty($model['create_time'])) || ! isset($model['create_time'])) {
+            if ((isset($model['create_time']) && empty($model['create_time'])) || !isset($model['create_time'])) {
                 $model['create_time'] = $this->getCreateTime();
             }
-            
+
             $this->insert($model);
             return $this->lastInsertValue;
         } elseif (is_object($model)) {
             $data = $this->resolveDataInputFields($model);
             if (is_array($data) && count($data)) {
-                if ((isset($data['create_time']) && empty($data['create_time'])) || ! isset($model['create_time'])) {
+                if ((isset($data['create_time']) && empty($data['create_time'])) || !isset($model['create_time'])) {
                     $data['create_time'] = $this->getCreateTime();
                 }
                 $affectedRows = $this->insert($data);
@@ -184,8 +184,27 @@ class TableGateway extends ZfTableGateway implements ServiceLocatorAwareInterfac
      * Get create time (now) Y-m-d H:i:s
      * 
      * @return string
+     * @deprecated since version number
      */
     public function getCreateTime()
+    {
+        $now = new \DateTime('now');
+        return $now->format('Y-m-d H:i:s');
+    }
+
+    /**
+     *
+     * @return int
+     */
+    public function getUnixTimestamp()
+    {
+        return time();
+    }
+    /**
+     *
+     * @return string
+     */
+    public function getCurrentDateTime()
     {
         $now = new \DateTime('now');
         return $now->format('Y-m-d H:i:s');
@@ -327,7 +346,7 @@ class TableGateway extends ZfTableGateway implements ServiceLocatorAwareInterfac
         }
         return false;
     }
-    
+
     /**
      * Delete permanently
      * 
@@ -348,8 +367,6 @@ class TableGateway extends ZfTableGateway implements ServiceLocatorAwareInterfac
         return false;
     }
 
-
-
     /**
      *
      * @param int $id
@@ -360,28 +377,28 @@ class TableGateway extends ZfTableGateway implements ServiceLocatorAwareInterfac
      * fields to be pulled from the joined table ('fields' key), and the join type ('type' key)
      * @return EntityInterface|null
      */
-    public function fetch($id, $params = array(), $condition = array(), $join = FALSE, $join_params = array())
+    public function fetch($id, $params = array(), $condition = array(),
+            $join = FALSE, $join_params = array())
     {
         $select = $this->getSlaveSql()->select();
         if (is_array($params) && array_key_exists('fields', $params)) {
             $select->columns($params['fields']);
         }
-        
-        if($join){
-            foreach($join_params as $join_param){
-                if(isset($join_param['table']) && isset($join_param['on'])){
+
+        if ($join) {
+            foreach ($join_params as $join_param) {
+                if (isset($join_param['table']) && isset($join_param['on'])) {
                     $select->join(
-                        $join_param['table'], 
-                        $join_param['on'], 
-                        isset($join_param['fields'])?$join_param['fields']:array(), 
-                        isset($join_param['type'])?$join_param['type']:'inner' 
+                            $join_param['table'], $join_param['on'],
+                            isset($join_param['fields']) ? $join_param['fields'] : array(),
+                            isset($join_param['type']) ? $join_param['type'] : 'inner'
                     );
                 }
             }
         }
 
         $fetch_condition = array($this->getTable() . '.id' => $id);
-        if(is_array($condition) && !empty($condition)){
+        if (is_array($condition) && !empty($condition)) {
             $fetch_condition = array_merge($fetch_condition, $condition);
         }
         $select = $select->where($fetch_condition);
@@ -389,10 +406,10 @@ class TableGateway extends ZfTableGateway implements ServiceLocatorAwareInterfac
         if ($resultset->count()) {
             return $resultset->current();
         }
-        
+
         return null;
     }
-    
+
     /**
      *
      * @param array $params
@@ -409,21 +426,20 @@ class TableGateway extends ZfTableGateway implements ServiceLocatorAwareInterfac
         if (is_array($params) && array_key_exists('fields', $params)) {
             $select->columns($params['fields']);
         }
-            
-        if($join){
-            foreach($join_params as $join_param){
-                if(isset($join_param['table']) && isset($join_param['on'])){
+
+        if ($join) {
+            foreach ($join_params as $join_param) {
+                if (isset($join_param['table']) && isset($join_param['on'])) {
                     $select->join(
-                        $join_param['table'], 
-                        $join_param['on'], 
-                        isset($join_param['fields'])?$join_param['fields']:array(), 
-                        isset($join_param['type'])?strtolower($join_param['type']):'inner' 
+                            $join_param['table'], $join_param['on'],
+                            isset($join_param['fields']) ? $join_param['fields'] : array(),
+                            isset($join_param['type']) ? strtolower($join_param['type']) : 'inner'
                     );
                 }
             }
         }
-        
-        if(is_array($condition) && !empty($condition)){
+
+        if (is_array($condition) && !empty($condition)) {
             $select = $select->where($condition);
         }
         if (!empty($order)) {
@@ -435,7 +451,7 @@ class TableGateway extends ZfTableGateway implements ServiceLocatorAwareInterfac
         }
         return null;
     }
-    
+
     /**
      * Update table
      * 
@@ -456,7 +472,5 @@ class TableGateway extends ZfTableGateway implements ServiceLocatorAwareInterfac
         }
         return false;
     }
-    
 
 }
-
