@@ -4,7 +4,7 @@ return array(
     'controllers' => array(
         'invokables' => array(),
         'factories' => [
-            'HelperGoalioIndexController' => '\Helper\Goalio\Controller\IndexControllerFactory'
+            'helperGoalioIndexController' => '\Helper\Goalio\Controller\IndexControllerFactory'
         ]
     ),
     'router' => array(
@@ -91,27 +91,27 @@ return array(
     ),
     'service_manager' => [
         'invokables' => [
-            'LoggerService' => '\Helper\Service\Logger',
-            'SmsService' => '\Helper\Service\Sms',
+            'loggerService' => '\Helper\Service\Logger',
+            'smsService' => '\Helper\Service\Sms',
         ],
         'aliases' => [
-            'Logger' => 'LoggerService',
-            'SimpleMailerService' => 'SimpleMailer',
+            'logger' => 'loggerService',
+            'simpleMailerService' => 'simpleMailer',
         ],
         'shared' => [
-            'SimpleMailer' => false,
+            'simpleMailer' => false,
         ],
         'factories' => [
-            'FileUploadService' => '\Helper\Service\FileUploadServiceFactory',
-            'SimpleMailer' => '\Helper\Service\SimpleMailerFactory',
-            'DefaultNavigation' => '\Zend\Navigation\Service\DefaultNavigationFactory',
-            'HelperUserHasRoleMapper' => '\Helper\Mapper\Junction\UserHasRoleMapperFactory',
-            'HelperHistoryLoginMapper' => '\Helper\Mapper\HistoryLoginMapperFactory',
-            'HelperHistoryFailedLoginMapper' => '\Helper\Mapper\HistoryFailedLoginMapperFactory',
-            'HelperRoleMapper' => '\Helper\Mapper\RoleMapperFactory',
-            'HelperArticleMapper' => '\Helper\Mapper\ArticleMapperFactory',
-            'HelperZfcUserListener' => '\Member\EventManager\ZfcUserListenerFactory',
-            'HelperGoalioForgotPasswordListener' => '\Helper\Goalio\EventManager\GoalioForgotPasswordListenerFactory'
+            'fileUploadService' => '\Helper\Service\FileUploadServiceFactory',
+            'simpleMailer' => '\Helper\Service\SimpleMailerFactory',
+            'defaultNavigation' => '\Zend\Navigation\Service\DefaultNavigationFactory',
+            'helperUserHasRoleMapper' => '\Helper\Mapper\Junction\UserHasRoleMapperFactory',
+            'helperHistoryLoginMapper' => '\Helper\Mapper\HistoryLoginMapperFactory',
+            'helperHistoryFailedLoginMapper' => '\Helper\Mapper\HistoryFailedLoginMapperFactory',
+            'helperRoleMapper' => '\Helper\Mapper\RoleMapperFactory',
+            'helperArticleMapper' => '\Helper\Mapper\ArticleMapperFactory',
+            'helperZfcUserListener' => '\Member\EventManager\ZfcUserListenerFactory',
+            'helperGoalioForgotPasswordListener' => '\Helper\Goalio\EventManager\GoalioForgotPasswordListenerFactory'
         ],
     ],
     'controller_plugins' => [
@@ -121,12 +121,12 @@ return array(
         'factories' => [
             'log' => '\Helper\Controller\Plugin\LoggerFactory',
             'hashid' => '\Helper\Controller\Plugin\HashIdFactory',
-            'AssignRole' => '\Helper\Controller\Plugin\AssignRoleFactory',
+            'assignRole' => '\Helper\Controller\Plugin\AssignRoleFactory',
         ],
     ],
     'view_helpers' => [
         'aliases' => [
-            'RenderImage' => \Helper\View\Helper\RenderImage::class,
+            'renderImage' => \Helper\View\Helper\RenderImage::class,
         ],
         'factories' => [
             \Helper\View\Helper\RenderImage::class => Helper\View\Helper\RenderImageFactory::class
