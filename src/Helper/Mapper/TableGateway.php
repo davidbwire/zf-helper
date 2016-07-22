@@ -12,6 +12,7 @@ use Zend\Log\Logger;
 use ZF\ApiProblem\ApiProblemResponse;
 use ZF\ApiProblem\ApiProblem;
 use Zend\Http\Response;
+use Ramsey\Uuid\Uuid;
 
 /**
  * Description of AbstractTableGateway
@@ -114,6 +115,23 @@ class TableGateway extends ZfTableGateway implements ServiceLocatorAwareInterfac
 
     /**
      *
+     * @param string $uuid
+     * @param string $fileName
+     * @return boolean
+     */
+    public function isValidUuid($uuid, $fileName = null)
+    {
+        if (!Uuid::isValid($uuid)) {
+            $this->getLogger()
+                    ->info('Invalid uuid provided - '
+                            . $uuid . '. File - ' . $fileName);
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     *
      * @param array|EntityInterface $model
      * @return int
      */
@@ -200,6 +218,7 @@ class TableGateway extends ZfTableGateway implements ServiceLocatorAwareInterfac
     {
         return time();
     }
+
     /**
      *
      * @return string
@@ -471,6 +490,23 @@ class TableGateway extends ZfTableGateway implements ServiceLocatorAwareInterfac
             return true;
         }
         return false;
+    }
+
+    /**
+     * Generate a version 4 (random) UUID string
+     *
+     * @return string|null
+     */
+    public function generateUuid4String()
+    {
+        try {
+            $oUuid = Uuid::uuid4();
+            return $oUuid->toString();
+        } catch (Exception $ex) {
+            $this->getLogger()
+                    ->crit($this->exceptionSummary($ex, __FILE__, __LINE__));
+            return null;
+        }
     }
 
 }
