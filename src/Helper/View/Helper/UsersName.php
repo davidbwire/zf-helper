@@ -7,22 +7,35 @@
 namespace Helper\View\Helper;
 
 use Zend\View\Helper\AbstractHelper;
-use Application\Mapper\UserMapper;
+use Helper\Mapper\UserMapperInterface;
 
 /**
- * Description of UserName
+ * Description of UsersName
  *
  * Get user's name(s)
  *
  * @author Bitmarshals Digital <sanicms@bitmarshals.co.ke>
  */
-class UserName extends AbstractHelper
+class UsersName extends AbstractHelper
 {
 
+    /**
+     *
+     * @var object
+     */
     protected $userMapper;
+
+    /**
+     *
+     * @var string|int
+     */
     protected $userId;
 
-    public function __construct(UserMapper $userMapper)
+    /**
+     * Avoid type check on constructor injection for flexibility pr
+     * @param object $userMapper
+     */
+    public function __construct(UserMapperInterface $userMapper)
     {
         $this->userMapper = $userMapper;
     }

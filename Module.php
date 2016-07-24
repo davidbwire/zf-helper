@@ -8,7 +8,7 @@ use Zend\ModuleManager\Feature\ControllerPluginProviderInterface;
 use Zend\ModuleManager\Feature\BootstrapListenerInterface;
 use Zend\ModuleManager\Feature\ControllerProviderInterface;
 use Zend\EventManager\EventInterface;
-use Helper\View\Helper\UserName;
+use Helper\View\Helper\UsersName;
 use BjyAuthorize\View\RedirectionStrategy;
 
 class Module implements ViewHelperProviderInterface,
@@ -82,8 +82,8 @@ class Module implements ViewHelperProviderInterface,
             ),
             'factories' => array(
                 'UserName' => function($sm) {
-                    $firstNameViewHelper = new UserName($sm->getServiceLocator()->get('ApplicationUserMapper'));
-                    return $firstNameViewHelper;
+                    $nameViewHelper = new UsersName($sm->getServiceLocator()->get('userMapper'));
+                    return $nameViewHelper;
                 },
                 'hashid' => '\Helper\View\Helper\HashIdFactory',
             ),
