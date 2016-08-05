@@ -21,6 +21,8 @@ use Zend\Validator\Digits as DigitsValidator;
 use Zend\I18n\Validator\PhoneNumber as PhoneNumberValidator;
 use Zend\I18n\Validator\IsInt as IsIntValidator;
 use Helper\Util\PasswordManager;
+use Zend\Db\Sql\Sql;
+use Zend\Db\Adapter\Adapter;
 
 /**
  * Description of IndexController
@@ -135,12 +137,10 @@ class IndexController extends AbstractActionController
         if ($request->isPost()) {
             $form->setData($this->getRequest()->getPost());
             if ($form->isValid()) {
-                $userService = $this->getUserService();
                 $email = $form->get('email')->getValue();
-                $user = $userService->getUserMapper()->findByEmail($email);
+                $userId = $this->findUserIdByEmail($email);
                 //only send request when email is found
-                if ($user !== null) {
-                    $userId = $user->getId();
+                if (!empty($userId)) {
                     //Invalidate all prior request for a new password
                     $this->getPasswordMapper()->cleanPriorForgotRequests($userId);
                     $logger = $sl->get('LoggerService');
@@ -172,8 +172,10 @@ class IndexController extends AbstractActionController
                     // add attachements and send
                     $simpleMailer->send($simpleMailer->generateEmailMessage($email,
                                     'Password Recovery', $attachments));
+                    $vm = new ViewModel(array('email' => $email));
+                } else {
+                    $vm = new ViewModel(array('email' => $email, 'error' => 1));
                 }
-                $vm = new ViewModel(array('email' => $email));
                 // tell user that the password has been sent
                 $vm->setTemplate('helper/simple-mailer/password_sent');
                 return $vm;
@@ -222,30 +224,6 @@ class IndexController extends AbstractActionController
 
     /**
      *
-     * @return UserService
-     */
-    public function getUserService()
-    {
-        if (!$this->userService) {
-            $this->userService = $this->serviceLocator
-                    ->get('zfcuser_user_service');
-        }
-        return $this->userService;
-    }
-
-    /**
-     *
-     * @param UserService $userService
-     * @return \Helper\Goalio\Controller\IndexController
-     */
-    public function setUserService(UserService $userService)
-    {
-        $this->userService = $userService;
-        return $this;
-    }
-
-    /**
-     *
      * @param PasswordMapper $passwordMapper
      * @return \Helper\Goalio\Controller\IndexController
      */
@@ -267,6 +245,20 @@ class IndexController extends AbstractActionController
         }
 
         return $this->passwordMapper;
+    }
+
+    public function findUserIdByEmail($email)
+    {
+        $sql = new Sql($this->serviceLocator->get('dbAdapter'));
+        $select = $sql->select('user')
+                ->columns(['id'])
+                ->where(array('email' => $email));
+        $result = $sql->prepareStatementForSqlObject($select)
+                ->execute();
+        if ($result->count()) {
+            return $result->current()['id'];
+        }
+        return null;
     }
 
 }
