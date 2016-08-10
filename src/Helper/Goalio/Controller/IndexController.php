@@ -75,9 +75,7 @@ class IndexController extends AbstractActionController
     public function resetPasswordAction()
     {
         // get the hashed_user_id
-        $hashedUserId = $this->params()->fromRoute('hashed_user_id', null);
-        //  normalize it to get the actual user_id
-        $userId = array_shift($this->hashid()->decode($hashedUserId));
+        $userId = $this->params()->fromRoute('user_id', null);
         // get the recovery token
         $token = $this->params()->fromRoute('token', null);
         // let goalio do it's work
@@ -93,7 +91,7 @@ class IndexController extends AbstractActionController
      */
     public function requestResetPasswordLinkAction()
     {
-
+        
 
         $vm = new ViewModel();
 
@@ -155,7 +153,7 @@ class IndexController extends AbstractActionController
                     $aData['request_key'] = $tokenGenerator->generateToken() .
                             $tokenGenerator->generateToken();
                     $aData['request_time'] = $rTime;
-                    $aData['create_time'] = $rTime;
+                    $aData['create_time'] = time();
                     $this->getPasswordMapper()->persist($aData,
                             'user_password_reset');
 

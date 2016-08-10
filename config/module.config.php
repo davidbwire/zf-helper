@@ -65,7 +65,7 @@ return array(
             'reset_password' => array(
                 'type' => 'Segment',
                 'options' => array(
-                    'route' => '/reset-password/:hashed_user_id/:token',
+                    'route' => '/reset-password/:user_id/:token',
                     'defaults' => array(
                         // route via HelperGoalioIndexController to decode
                         'controller' => 'HelperGoalioIndexController',
