@@ -211,9 +211,9 @@ class SimpleMailer
             '$htmlContent variable provided should be a string.');
         }
         $mimedHtmlContent = new MimePart($htmlContent);
-        $htmlAttachment = $mimedHtmlContent->setType(Mime::TYPE_HTML);
+        $mimedHtmlContent->type = Mime::TYPE_HTML;
         $this->attachmentsCarrier
-                ->addPart($htmlAttachment);
+                ->addPart($mimedHtmlContent);
         return $this->attachmentsCarrier;
     }
 
