@@ -10,7 +10,7 @@ use Zend\Db\Adapter\Adapter;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Db\Sql\Sql;
-use Application\Mapper\UserMapper;
+use Helper\Mapper\UserMapperInterface;
 use Zend\EventManager\Event;
 
 /**
@@ -63,7 +63,7 @@ class GoalioForgotPasswordListener implements ServiceLocatorAwareInterface
             throw new \RuntimeException('The parameter supplied of type' . gettype($user) . ' does not have a getId/setState method.');
         }
         // enable login
-        $user->setState(UserMapper::STATE_LOGIN_ENABLED);
+        $user->setState(1);
         // clear failed logins to prevent captcha firing
         $this->serviceLocator->get('HelperHistoryFailedLoginMapper')->resetFailedAttempts($user->getId());
     }

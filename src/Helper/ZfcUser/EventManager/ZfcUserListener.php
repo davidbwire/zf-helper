@@ -22,6 +22,7 @@ use Zend\Validator\EmailAddress as EmailValidator;
 use Zend\Session\Container;
 use Application\Mapper\UserMapper;
 use Helper\Mapper\HistoryFailedLoginMapper;
+use Ramsey\Uuid\Uuid;
 
 /**
  * Description of Listener
@@ -32,6 +33,7 @@ use Helper\Mapper\HistoryFailedLoginMapper;
  */
 class ZfcUserListener implements ServiceLocatorAwareInterface
 {
+
     /**
      *
      * @var string
@@ -109,7 +111,7 @@ class ZfcUserListener implements ServiceLocatorAwareInterface
 
     public function __construct(ServiceLocatorInterface $serviceLocator)
     {
-        $this->dbAdapter = $serviceLocator->get('DbAdapter');
+        $this->dbAdapter = $serviceLocator->get('dbAdapter');
         $config = $serviceLocator->get('Config');
 
         if (!isset($config['recaptcha']['public_key']) || !isset($config['recaptcha']['private_key'])) {
@@ -138,7 +140,8 @@ class ZfcUserListener implements ServiceLocatorAwareInterface
         $data['ip_address'] = $remoteAddress->getIpAddress();
         $data['user_agent'] = $request->getServer('HTTP_USER_AGENT');
         $data['messages'] = json_encode($e->getMessages());
-        $data['create_time'] = $this->getCreateTime();
+        $data['create_time'] = time();
+        $data['id'] = Uuid::uuid4()->toString();
         $sql = $this->getSlaveSql($this->historyLoginTable);
         $insert = $sql->insert()->values($data);
         try {
@@ -160,31 +163,39 @@ class ZfcUserListener implements ServiceLocatorAwareInterface
     {
         $data = array();
         // access email and manually get user_id
-        $data['email'] = $e->getRequest()->getPost('identity');
+        $data['username_or_email'] = $e->getRequest()->getPost('identity');
         $data['messages'] = json_encode($e->getMessages());
         $data['authentication_code'] = $e->getCode();
-        $sql = $this->getSlaveSql($this->historyFailedLoginTable);
+        $data['create_time'] = time();
+        $data['id'] = Uuid::uuid4()->toString();
+
+        $sqlHistFailedLogin = $this->getSlaveSql($this->historyFailedLoginTable);
         try {
+            $sqlUser = $this->getSlaveSql($this->userTable);
+
             // try retreiving the user_id to save it against the failed login
-            $select = $this->getSlaveSql($this->userTable)->select()->columns(array(
-                        'id'))
-                    ->where(array('email' => $data['email']))
+            $selectUser = $sqlUser->select()->columns(array('id'))
+                    ->where(['email' => $data['username_or_email']])
+                    ->where(['username' => $data['username_or_email']],
+                            \Zend\Db\Sql\Predicate\PredicateSet::OP_OR)
                     ->limit(1);
-            $resultSelect = $sql->prepareStatementForSqlObject($select)->execute();
-            if ($resultSelect->count()) {
-                $userId = (int) $resultSelect->current()['id'];
+            $resultSelectUser = $sqlUser->prepareStatementForSqlObject($selectUser)
+                    ->execute();
+            if ($resultSelectUser->count()) {
+                $userId = $resultSelectUser->current()['id'];
                 $failedAttempts = $this->getFailedAttempts($userId);
                 if ($failedAttempts !== null) {
                     $data['attempts'] = $failedAttempts + 1;
-                    $query = $sql->update()->set($data)->where(array('user_id' => $userId));
+                    $query = $sqlHistFailedLogin->update()->set($data)->where(array(
+                        'user_id' => $userId));
                 } else {
                     // first_failed login
                     $data['attempts'] = 1;
                     $data['user_id'] = $userId;
-                    $data['create_time'] = $this->getCreateTime();
-                    $query = $sql->insert()->values($data);
+                    $data['create_time'] = time();
+                    $query = $sqlHistFailedLogin->insert()->values($data);
                 }
-                $sql->prepareStatementForSqlObject($query)->execute();
+                $sqlHistFailedLogin->prepareStatementForSqlObject($query)->execute();
             }
         } catch (\Exception $ex) {
             $this->getLogger()->crit($ex->getTraceAsString());
@@ -208,7 +219,7 @@ class ZfcUserListener implements ServiceLocatorAwareInterface
             $userId = $this->getUserId();
             if ($userId !== null) {
                 $failedAttempts = $this->getFailedAttempts($userId);
-                if ($failedAttempts > 5) {
+                if ($failedAttempts > 2) {
                     $recaptcha = new ReCaptcha();
                     // @todo pull settings from config
                     $recaptcha->setPrivkey($this->recaptchaPrivateKey)
@@ -238,11 +249,11 @@ class ZfcUserListener implements ServiceLocatorAwareInterface
             // check we are able to get a user_id
             if ($userId !== null) {
                 $failedAttempts = $this->getFailedAttempts($userId);
-                if ($failedAttempts > 10) {
+                if ($failedAttempts > 4) {
                     $this->disableLogin($userId);
                     $required = true;
                     $this->loginFilter->add(array('name' => 'captcha', 'required' => $required));
-                } elseif ($failedAttempts > 5) {
+                } elseif ($failedAttempts > 2) {
                     $required = true;
                     $this->loginFilter->add(array('name' => 'captcha', 'required' => $required));
                 }
@@ -305,7 +316,7 @@ class ZfcUserListener implements ServiceLocatorAwareInterface
                         ->limit(1);
                 $result = $sql->prepareStatementForSqlObject($select)->execute();
                 if ($result->count()) {
-                    $userId = (int) $result->current()['id'];
+                    $userId = $result->current()['id'];
                 }
             }
             // persist for reuse
@@ -342,7 +353,7 @@ class ZfcUserListener implements ServiceLocatorAwareInterface
      */
     protected function disableLogin($userId)
     {
-        $userMapper = $this->serviceLocator->get('ApplicationUserMapper');
+        $userMapper = $this->serviceLocator->get('applicationUserMapper');
         if (!$userMapper instanceof UserMapper) {
             return null;
         }
@@ -356,7 +367,7 @@ class ZfcUserListener implements ServiceLocatorAwareInterface
     public function getHistoryFailedLoginMapper()
     {
         if (!$this->historyFailedLoginMapper) {
-            $this->setHistoryFailedLoginMapper($this->serviceLocator->get('HelperHistoryFailedLoginMapper'));
+            $this->setHistoryFailedLoginMapper($this->serviceLocator->get('helperHistoryFailedLoginMapper'));
         }
         return $this->historyFailedLoginMapper;
     }
@@ -376,7 +387,7 @@ class ZfcUserListener implements ServiceLocatorAwareInterface
      * Get create time
      * @return string
      */
-    protected function getCreateTime()
+    private function getCreateTime()
     {
         $now = new \DateTime('now');
         return $now->format('Y-m-d H:i:s');
@@ -398,7 +409,7 @@ class ZfcUserListener implements ServiceLocatorAwareInterface
      */
     protected function getLogger()
     {
-        return $this->serviceLocator->get('LoggerService');
+        return $this->serviceLocator->get('loggerService');
     }
 
     /**

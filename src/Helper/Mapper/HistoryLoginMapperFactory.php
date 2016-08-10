@@ -22,10 +22,9 @@ class HistoryLoginMapperFactory implements FactoryInterface
 
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        $resultSetPrototype = new HydratingResultSet(new ClassMethods(true),
-                new HistoryLogin());
+       
         $historyLoginMapper = new HistoryLoginMapper('history_login',
-                $serviceLocator->get('DbAdapter'), null, $resultSetPrototype);
+                $serviceLocator->get('dbAdapter'));
         return $historyLoginMapper;
     }
 

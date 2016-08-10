@@ -29,7 +29,7 @@ class HistoryFailedLoginMapper extends TableGateway
                 $sql = $this->getSlaveSql();
                 $update = $sql->update()
                         ->set(array('attempts' => 0))
-                        ->where(array('user_id' => (int) $userId));
+                        ->where(array('user_id' => $userId));
                 $result = $sql->prepareStatementForSqlObject($update)->execute();
                 if ($result->count()) {
                     $affectedRows = $result->getAffectedRows();
@@ -51,7 +51,7 @@ class HistoryFailedLoginMapper extends TableGateway
         $failedAttempts = null;
         $sql = $this->getSlaveSql();
         $select = $sql->select()->columns(array('attempts'))
-                ->where(array('user_id' => (int) $userId))
+                ->where(array('user_id' => $userId))
                 ->limit(1);
         $result = $sql->prepareStatementForSqlObject($select)->execute();
         if ($result->count()) {

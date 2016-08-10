@@ -102,6 +102,7 @@ return array(
             'simpleMailer' => false,
         ],
         'factories' => [
+            'applicationUserMapper' => \NtMapper\Mapper\UserMapperFactory::class,
             'fileUploadService' => '\Helper\Service\FileUploadServiceFactory',
             'simpleMailer' => '\Helper\Service\SimpleMailerFactory',
             'defaultNavigation' => '\Zend\Navigation\Service\DefaultNavigationFactory',
@@ -110,7 +111,7 @@ return array(
             'helperHistoryFailedLoginMapper' => '\Helper\Mapper\HistoryFailedLoginMapperFactory',
             'helperRoleMapper' => '\Helper\Mapper\RoleMapperFactory',
             'helperArticleMapper' => '\Helper\Mapper\ArticleMapperFactory',
-            'helperZfcUserListener' => '\Member\EventManager\ZfcUserListenerFactory',
+            'helperZfcUserListener' => '\Helper\ZfcUser\EventManager\ZfcUserListenerFactory',
             'helperGoalioForgotPasswordListener' => '\Helper\Goalio\EventManager\GoalioForgotPasswordListenerFactory'
         ],
     ],
