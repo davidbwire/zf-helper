@@ -42,14 +42,14 @@ class RenderImage extends AbstractHelper
 
     /**
      *
-     * @param string $tableName The table holding the image reference
+     * @param string $tableNameOrImage The table holding the image reference
      * @param string $rowName The specific column to pull the image reference
      * @param array $where ['id' => $id] Unique identifier for a specific row
      * @param string $imagePath The image path (it's always appended to the db result
      *  but can)
      * @return type
      */
-    public function __invoke($tableName = null, $rowName = null,
+    public function __invoke($tableNameOrImage = null, $rowName = null,
             array $where = [], $imagePath = null)
     {
         $imageTemplate = '<img src="%s">';
@@ -72,7 +72,7 @@ class RenderImage extends AbstractHelper
             return sprintf($imageTemplate, func_get_arg(0));
         }
         // check if the user passed the image path as a last param
-        if (empty($tableName) || empty($rowName) || empty($where)) {
+        if (empty($tableNameOrImage) || empty($rowName) || empty($where)) {
             if (is_readable($serverRoot . $imagePath)) {
                 return sprintf($imageTemplate, $imagePath);
             } else {
@@ -80,8 +80,8 @@ class RenderImage extends AbstractHelper
             }
         }
         // try retreiving the image from db.
-        if (!empty($tableName) && !empty($rowName) && !empty($where)) {
-            $result = $this->fetchImage($tableName, $rowName, $where);
+        if (!empty($tableNameOrImage) && !empty($rowName) && !empty($where)) {
+            $result = $this->fetchImage($tableNameOrImage, $rowName, $where);
             if (!empty($result)) {
                 // append the image path
                 return sprintf($imageTemplate, $imagePath . $result);
