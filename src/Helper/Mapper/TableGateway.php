@@ -509,4 +509,37 @@ class TableGateway extends ZfTableGateway implements ServiceLocatorAwareInterfac
         }
     }
 
+    /**
+     *
+     * @param mixed $data
+     * @param bool $exit
+     */
+    public static function printData($data, $exit = 1)
+    {
+        echo '<br>';
+        echo '<pre>';
+        print_r($data);
+        echo '</pre>';
+        echo '<br>';
+        if ($exit) {
+            exit;
+        }
+    }
+    /**
+     *
+     * @param obj $sqlObject
+     * @param Sql $sql
+     * @param bool $exit
+     */
+    protected static function printSqlObject($sqlObject, $sql, $exit = 1)
+    {
+        echo '<br>';
+        echo '<pre>';
+        echo $sql->getSqlStringForSqlObject($sqlObject);
+        echo '</pre>';
+        if ($exit) {
+            exit;
+        }
+    }
+
 }
