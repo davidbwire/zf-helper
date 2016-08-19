@@ -140,7 +140,7 @@ class Sms implements ServiceLocatorAwareInterface
                         $this->getLogger()->error((array) $result);
                     } catch (Exception $exc) {
                         $this->getServiceLocator()->get('LoggerService')
-                                ->crit($exc->getMessage() . ' ' . __FILE__ . ' ' . __LINE__);
+                                ->crit('Code - ' . $exc->getCode() . ' Message - ' . $exc->getMessage() . ' ' . __FILE__ . ' ' . __LINE__);
                     }
                     $this->result = $result;
                     return $this;
@@ -149,7 +149,7 @@ class Sms implements ServiceLocatorAwareInterface
                 return $this;
             } catch (Exception $exc) {
                 $this->getServiceLocator()->get('LoggerService')
-                        ->crit($exc->getMessage() . ' ' . __FILE__ . ' ' . __LINE__);
+                        ->crit('Code - ' . $exc->getCode() . ' Message - ' . $exc->getMessage() . ' ' . __FILE__ . ' ' . __LINE__);
             }
         } else {
             // log
