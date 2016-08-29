@@ -132,6 +132,68 @@ class TableGateway extends ZfTableGateway implements ServiceLocatorAwareInterfac
 
     /**
      *
+     * @param string $userId
+     * @param string $roleName
+     * @return boolean true
+     * @throws \Helper\Mapper\Exception
+     */
+    protected function assignRoleByName($userId, $roleName = 'guest')
+    {
+        $sql = $this->getSlaveSql();
+
+        // find role.id
+        $selectRoleId = $sql->select()
+                ->from('role')
+                ->columns(['role_id' => 'id'])
+                ->where(['name' => $roleName])
+                ->limit(1);
+
+        $selectRoleIdResult = $sql->prepareStatementForSqlObject($selectRoleId)
+                ->execute();
+
+        if ($selectRoleIdResult->getFieldCount() === 1) {
+
+            $roleId = $selectRoleIdResult->current();
+            return $this->assignRoleToUser($userId, $roleId);
+        } else {
+            $ex = new Exception('role.name ' . $roleName . 'is not available');
+            $this->getLogger()
+                    ->crit($this->exceptionSummary($ex, __FILE__, __LINE__));
+            throw $ex;
+        }
+    }
+
+    /**
+     *
+     * @param string $userId
+     * @param string $roleId
+     * @return boolean
+     * @throws \Helper\Mapper\Exception
+     */
+    private function assignRoleToUser($userId, $roleId)
+    {
+        $sql = $this->getSlaveSql();
+
+        $insertUserHasRole = $sql->insert()
+                ->into('user_has_role')
+                ->values(['user_id' => $userId, 'role_id' => $roleId]);
+
+        $resultInsertUserHasRole = $sql->prepareStatementForSqlObject($insertUserHasRole)
+                ->execute();
+
+        if ($resultInsertUserHasRole->getAffectedRows() === 1) {
+            return true;
+        } else {
+            $ex = new Exception('user.id ' . $userId . 'could not be '
+                    . 'assigned role.id ' . $roleId);
+            $this->getLogger()
+                    ->crit($this->exceptionSummary($ex, __FILE__, __LINE__));
+            throw $ex;
+        }
+    }
+
+    /**
+     *
      * @param array|EntityInterface $model
      * @return int
      */
@@ -525,6 +587,7 @@ class TableGateway extends ZfTableGateway implements ServiceLocatorAwareInterfac
             exit;
         }
     }
+
     /**
      *
      * @param obj $sqlObject
