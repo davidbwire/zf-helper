@@ -5,9 +5,6 @@ namespace Helper\Mapper;
 use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway as ZfTableGateway;
 use Zend\Db\Sql\Predicate\Predicate;
-use Zend\Db\Adapter\Adapter;
-use Zend\ServiceManager\ServiceLocatorInterface;
-use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\Log\Logger;
 use ZF\ApiProblem\ApiProblemResponse;
 use ZF\ApiProblem\ApiProblem;
@@ -19,7 +16,7 @@ use Ramsey\Uuid\Uuid;
  *
  * @author David Bwire
  */
-class TableGateway extends ZfTableGateway implements ServiceLocatorAwareInterface
+class TableGateway extends ZfTableGateway
 {
 
     /**
@@ -27,12 +24,6 @@ class TableGateway extends ZfTableGateway implements ServiceLocatorAwareInterfac
      * @var Logger
      */
     private $logger;
-
-    /**
-     *
-     * @var ServiceLocatorInterface
-     */
-    protected $serviceLocator;
 
     /**
      * Retreive an Sql instance preset with the dbAdapter and tableName
@@ -261,18 +252,6 @@ class TableGateway extends ZfTableGateway implements ServiceLocatorAwareInterfac
     }
 
     /**
-     * Get create time (now) Y-m-d H:i:s
-     * 
-     * @return string
-     * @deprecated since version number
-     */
-    public function getCreateTime()
-    {
-        $now = new \DateTime('now');
-        return $now->format('Y-m-d H:i:s');
-    }
-
-    /**
      *
      * @return int
      */
@@ -283,42 +262,12 @@ class TableGateway extends ZfTableGateway implements ServiceLocatorAwareInterfac
 
     /**
      *
-     * @return string
-     */
-    public function getCurrentDateTime()
-    {
-        $now = new \DateTime('now');
-        return $now->format('Y-m-d H:i:s');
-    }
-
-    /**
-     *
-     * @return ServiceLocatorInterface
-     */
-    public function getServiceLocator()
-    {
-        return $this->serviceLocator;
-    }
-
-    /**
-     *
-     * @param ServiceLocatorInterface $serviceLocator
-     * @return \Helper\Mapper\TableGateway
-     */
-    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
-    {
-        $this->serviceLocator = $serviceLocator;
-        return $this;
-    }
-
-    /**
-     *
      * @return Logger
      */
     public function getLogger()
     {
         if (!$this->logger) {
-            $this->setLogger($this->serviceLocator->get('LoggerService'));
+            throw new \Exception('Logger is not set.');
         }
         return $this->logger;
     }

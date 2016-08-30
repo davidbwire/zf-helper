@@ -1,4 +1,5 @@
 <?php
+use Interop\Container\ContainerInterface;
 
 return array(
     'controllers' => array(
@@ -90,6 +91,14 @@ return array(
         ),
     ),
     'service_manager' => [
+        'initializers' => [
+            function(ContainerInterface $container, $instance) {
+                if (!$instance instanceof Helper\Mapper\TableGateway) {
+                    return;
+                }
+                $instance->setLogger($container->get('logger'));
+            }
+        ],
         'invokables' => [
             'loggerService' => '\Helper\Service\Logger',
             'smsService' => '\Helper\Service\Sms',
