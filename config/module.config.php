@@ -1,4 +1,5 @@
 <?php
+
 use Interop\Container\ContainerInterface;
 
 return array(
@@ -140,6 +141,11 @@ return array(
         ],
         'factories' => [
             \Helper\View\Helper\RenderImage::class => Helper\View\Helper\RenderImageFactory::class
+        ]
+    ],
+    'validators' => [
+        'invokables' => [
+            Helper\Validator\PhoneNumber::class => Helper\Validator\PhoneNumber::class,
         ]
     ]
 );
