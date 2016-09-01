@@ -145,7 +145,7 @@ return array(
     ],
     'validators' => [
         'invokables' => [
-            Helper\Validator\PhoneNumber::class => Helper\Validator\PhoneNumber::class,
+            Helper\Validator\MobileNumber::class => Helper\Validator\MobileNumber::class,
         ]
     ],
     'filters' => [
