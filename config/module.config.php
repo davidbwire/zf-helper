@@ -147,5 +147,10 @@ return array(
         'invokables' => [
             Helper\Validator\PhoneNumber::class => Helper\Validator\PhoneNumber::class,
         ]
+    ],
+    'filters' => [
+        'invokables' => [
+            Helper\Filter\PhoneNumberDigits::class => Helper\Filter\PhoneNumberDigits::class
+        ]
     ]
 );
