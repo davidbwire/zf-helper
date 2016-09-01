@@ -48,7 +48,12 @@ class PhoneNumberDigits extends Digits
             $pattern = '/[\p{^N}]/';
         }
         // prepend the plus sign
-        return '+' . preg_replace($pattern, '', $value);
+        $filteredValue = preg_replace($pattern, '', $value);
+
+        if (!empty($filteredValue)) {
+            $filteredValue = '+' . $filteredValue;
+        }
+        return $filteredValue;
     }
 
 }
