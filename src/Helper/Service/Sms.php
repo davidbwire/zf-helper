@@ -10,17 +10,16 @@ use Exception;
 use Zend\Http\Client;
 use Zend\Http\Client\Adapter\Curl;
 use Zend\Http\Request;
-use Zend\ServiceManager\ServiceLocatorAwareInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Http\Response;
 use Helper\AfricasTalking\AfricasTalkingGateway;
+use Zend\Log\Logger;
 
 /**
  * Description of SmsService
  *
  * @author Bitmarshals Digital <info@bitmarshals.co.ke>
  */
-class Sms implements ServiceLocatorAwareInterface
+class Sms
 {
 
     /**
@@ -62,9 +61,9 @@ class Sms implements ServiceLocatorAwareInterface
 
     /**
      *
-     * @var ServiceLocatorInterface
+     * @var Logger
      */
-    protected $serviceLocator;
+    protected $logger;
 
     /**
      *
@@ -139,7 +138,7 @@ class Sms implements ServiceLocatorAwareInterface
                     try {
                         $this->getLogger()->error((array) $result);
                     } catch (Exception $exc) {
-                        $this->getServiceLocator()->get('LoggerService')
+                        $this->getLogger()
                                 ->crit('Code - ' . $exc->getCode() . ' Message - ' . $exc->getMessage() . ' ' . __FILE__ . ' ' . __LINE__);
                     }
                     $this->result = $result;
@@ -148,12 +147,12 @@ class Sms implements ServiceLocatorAwareInterface
                 $this->result = $result;
                 return $this;
             } catch (Exception $exc) {
-                $this->getServiceLocator()->get('LoggerService')
+                $this->getLogger()
                         ->crit('Code - ' . $exc->getCode() . ' Message - ' . $exc->getMessage() . ' ' . __FILE__ . ' ' . __LINE__);
             }
         } else {
             // log
-            $logger = $this->getServiceLocator()->get('LoggerService');
+            $logger = $this->getLogger();
             $logger->err('Missing parameters to connect to AfricasTalking gateway.');
             throw new Exception('Missing parameters to connect to AfricasTalking gateway.');
         }
@@ -209,7 +208,7 @@ class Sms implements ServiceLocatorAwareInterface
             $this->passwordInfobip = $aInfobip['password'];
         } else {
             // log
-            $logger = $this->getServiceLocator()->get('LoggerService');
+            $logger = $this->getLogger();
             $logger->err('Missing parameters to connect to infobip api.');
             // throw error
             throw new Exception('Missing parameters to connect to infobip api.');
@@ -222,26 +221,12 @@ class Sms implements ServiceLocatorAwareInterface
      */
     protected function getLogger()
     {
-        return $this->getServiceLocator()->get('LoggerService');
+        return $this->logger;
     }
 
-    /**
-     *
-     * @return ServiceLocatorInterface
-     */
-    public function getServiceLocator()
+    public function setLogger(Logger $logger)
     {
-        return $this->serviceLocator;
-    }
-
-    /**
-     *
-     * @param ServiceLocatorInterface $serviceLocator
-     * @return \Application\Service\SmsService
-     */
-    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
-    {
-        $this->serviceLocator = $serviceLocator;
+        $this->logger = $logger;
         return $this;
     }
 
@@ -249,12 +234,15 @@ class Sms implements ServiceLocatorAwareInterface
      *
      * @return array
      */
-    public function getConfig()
+    protected function getConfig()
     {
-        if (!$this->config) {
-            $this->config = $this->getServiceLocator()->get('Config');
-        }
         return $this->config;
+    }
+
+    public function setConfig($config)
+    {
+        $this->config = $config;
+        return $this;
     }
 
     /**
