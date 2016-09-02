@@ -93,12 +93,7 @@ return array(
     ),
     'service_manager' => [
         'initializers' => [
-            function(ContainerInterface $container, $instance) {
-                if (!$instance instanceof Helper\Mapper\TableGateway) {
-                    return;
-                }
-                $instance->setLogger($container->get('logger'));
-            }
+            \Helper\ServiceManager\TableGatewayInitializer::class,
         ],
         'invokables' => [
             'loggerService' => '\Helper\Service\Logger',
