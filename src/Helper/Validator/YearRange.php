@@ -67,8 +67,8 @@ class YearRange extends AbstractValidator
         $isValid = (($value >= $minYear) && ($value <= $maxYear));
         if (!$isValid) {
             $this->error(self::OUT_OF_RANGE,
-                    'Your year of birth should be between ' .
-                    $minYear . ' and ' . $currentYear);
+                    'The year provided should be between ' .
+                    $minYear . ' and ' . $maxYear);
         }
         return $isValid;
     }
