@@ -172,7 +172,7 @@ class TableGateway extends ZfTableGateway
 
             $insertUserHasRole = $sql->insert()
                     ->into('user_has_role')
-                    ->values(['user_id' => $userId, 'role_id' => $roleId]);
+                    ->values(['user_id' => $userId, 'role_id' => $roleId, 'create_time' => time()]);
 
             $resultInsertUserHasRole = $sql->prepareStatementForSqlObject($insertUserHasRole)
                     ->execute();
