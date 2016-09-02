@@ -10,6 +10,7 @@ use ZF\ApiProblem\ApiProblemResponse;
 use ZF\ApiProblem\ApiProblem;
 use Zend\Http\Response;
 use Ramsey\Uuid\Uuid;
+use Exception;
 
 /**
  * Description of AbstractTableGateway
@@ -144,8 +145,12 @@ class TableGateway extends ZfTableGateway
 
         if ($selectRoleIdResult->getFieldCount() === 1) {
 
-            $roleId = $selectRoleIdResult->current();
-            return $this->assignRoleToUser($userId, $roleId);
+            $roleId = $selectRoleIdResult->current()['role_id'];
+            try {
+                return $this->assignRoleToUser($userId, $roleId);
+            } catch (Exception $exc) {
+                throw $exc;
+            }
         } else {
             $ex = new Exception('role.name ' . $roleName . 'is not available');
             $this->getLogger()
@@ -159,27 +164,33 @@ class TableGateway extends ZfTableGateway
      * @param string $userId
      * @param string $roleId
      * @return boolean
-     * @throws \Helper\Mapper\Exception
+     * @throws Exception
      */
     private function assignRoleToUser($userId, $roleId)
     {
-        $sql = $this->getSlaveSql();
+        try {
+            $sql = $this->getSlaveSql();
 
-        $insertUserHasRole = $sql->insert()
-                ->into('user_has_role')
-                ->values(['user_id' => $userId, 'role_id' => $roleId]);
+            $insertUserHasRole = $sql->insert()
+                    ->into('user_has_role')
+                    ->values(['user_id' => $userId, 'role_id' => $roleId]);
 
-        $resultInsertUserHasRole = $sql->prepareStatementForSqlObject($insertUserHasRole)
-                ->execute();
+            $resultInsertUserHasRole = $sql->prepareStatementForSqlObject($insertUserHasRole)
+                    ->execute();
 
-        if ($resultInsertUserHasRole->getAffectedRows() === 1) {
-            return true;
-        } else {
-            $ex = new Exception('user.id ' . $userId . 'could not be '
-                    . 'assigned role.id ' . $roleId);
+            if ($resultInsertUserHasRole->getAffectedRows() === 1) {
+                return true;
+            } else {
+                $ex = new Exception('user.id ' . $userId . 'could not be '
+                        . 'assigned role.id ' . $roleId);
+                $this->getLogger()
+                        ->crit($this->exceptionSummary($ex, __FILE__, __LINE__));
+                throw $ex;
+            }
+        } catch (\Exception $exc) {
             $this->getLogger()
-                    ->crit($this->exceptionSummary($ex, __FILE__, __LINE__));
-            throw $ex;
+                    ->crit(__METHOD__ . ' failed.');
+            throw $exc;
         }
     }
 
