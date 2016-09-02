@@ -131,11 +131,10 @@ class TableGateway extends ZfTableGateway
      */
     protected function assignRoleByName($userId, $roleName = 'guest')
     {
-        $sql = $this->getSlaveSql();
+        $sql = $this->getSlaveSql('role');
 
         // find role.id
         $selectRoleId = $sql->select()
-                ->from('role')
                 ->columns(['role_id' => 'id'])
                 ->where(['name' => $roleName])
                 ->limit(1);
