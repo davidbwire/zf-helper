@@ -12,6 +12,7 @@ use Zend\Stdlib\Hydrator\ClassMethods;
 use Zend\Db\ResultSet\HydratingResultSet;
 use Application\Entity\Role;
 use Helper\Mapper\RoleMapper;
+use Interop\Container\ContainerInterface;
 
 /**
  * Description of RoleMapperFactory
@@ -25,8 +26,18 @@ class RoleMapperFactory implements FactoryInterface
     {
         $resultSetPrototype = new HydratingResultSet(new ClassMethods(true),
                 new Role());
-        $roleMapper = new RoleMapper('role', $serviceLocator->get('DbAdapter'),
+        $roleMapper = new RoleMapper('role', $serviceLocator->get('dbAdapter'),
                 null, $resultSetPrototype);
+        return $roleMapper;
+    }
+
+    public function __invoke(ContainerInterface $container, $requestedName,
+            array $options = null)
+    {
+        $resultSetPrototype = new HydratingResultSet(new ClassMethods(true),
+                new Role());
+        $roleMapper = new RoleMapper('role', $container->get('dbAdapter'), null,
+                $resultSetPrototype);
         return $roleMapper;
     }
 

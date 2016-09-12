@@ -8,6 +8,7 @@ namespace Helper\Mapper;
 
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
+use Interop\Container\ContainerInterface;
 
 /**
  * Description of HistoryFailedLoginMapperFactory
@@ -23,6 +24,16 @@ class HistoryFailedLoginMapperFactory implements FactoryInterface
                 $serviceLocator->get('dbAdapter'));
         // Set a ServiceLocator lazy loading LoggerService etc.
         $historyFailedLoginMapper->setServiceLocator($serviceLocator);
+        return $historyFailedLoginMapper;
+    }
+
+    public function __invoke(ContainerInterface $container, $requestedName,
+            array $options = null)
+    {
+        $historyFailedLoginMapper = new HistoryFailedLoginMapper('history_failed_login',
+                $container->get('dbAdapter'));
+        // Set a ServiceLocator lazy loading LoggerService etc.
+        $historyFailedLoginMapper->setServiceLocator($container);
         return $historyFailedLoginMapper;
     }
 

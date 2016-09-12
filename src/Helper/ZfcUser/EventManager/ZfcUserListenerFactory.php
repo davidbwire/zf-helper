@@ -8,6 +8,7 @@ namespace Helper\ZfcUser\EventManager;
 
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
+use Interop\Container\ContainerInterface;
 
 /**
  * Description of ZfcUserListenerFactory
@@ -16,11 +17,21 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  */
 class ZfcUserListenerFactory implements FactoryInterface
 {
+
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
         $zfcUserListener = new ZfcUserListener($serviceLocator);
         // set service locator for retreiving mappers etc
         $zfcUserListener->setServiceLocator($serviceLocator);
+        return $zfcUserListener;
+    }
+
+    public function __invoke(ContainerInterface $container, $requestedName,
+            array $options = null)
+    {
+        $zfcUserListener = new ZfcUserListener($container);
+        // set service locator for retreiving mappers etc
+        $zfcUserListener->setServiceLocator($container);
         return $zfcUserListener;
     }
 

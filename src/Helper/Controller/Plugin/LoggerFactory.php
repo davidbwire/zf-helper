@@ -9,6 +9,7 @@ namespace Helper\Controller\Plugin;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Helper\Controller\Plugin\Logger;
+use Interop\Container\ContainerInterface;
 
 /**
  * Description of LoggerFactory
@@ -21,6 +22,14 @@ class LoggerFactory implements FactoryInterface
     public function createService(ServiceLocatorInterface $pluginManager)
     {
         $serviceLocator = $pluginManager->getServiceLocator();
+        $loggerPlugin = new Logger($serviceLocator->get('LoggerService'));
+        return $loggerPlugin;
+    }
+
+    public function __invoke(ContainerInterface $container, $requestedName,
+            array $options = null)
+    {
+        $serviceLocator = $container->getServiceLocator();
         $loggerPlugin = new Logger($serviceLocator->get('LoggerService'));
         return $loggerPlugin;
     }

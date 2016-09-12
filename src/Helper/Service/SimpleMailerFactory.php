@@ -9,6 +9,7 @@ namespace Helper\Service;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\ServiceManager\FactoryInterface;
 use Helper\Service\SimpleMailer;
+use Interop\Container\ContainerInterface;
 
 /**
  * Description of SimpleMailerFactory
@@ -24,6 +25,15 @@ class SimpleMailerFactory implements FactoryInterface
                 // use view manager fro $sm as it has view resolvers
                 $serviceLocator->get('ViewManager'),
                 $serviceLocator->get('Logger'));
+        return $simpleMailer;
+    }
+
+    public function __invoke(ContainerInterface $container, $requestedName,
+            array $options = null)
+    {
+        $simpleMailer = new SimpleMailer($container->get('config'),
+                // use view manager fro $sm as it has view resolvers
+                $container->get('ViewManager'), $container->get('Logger'));
         return $simpleMailer;
     }
 
