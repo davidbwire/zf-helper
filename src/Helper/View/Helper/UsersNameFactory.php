@@ -28,8 +28,7 @@ class UsersNameFactory implements FactoryInterface
     public function __invoke(ContainerInterface $container, $requestedName,
             array $options = null)
     {
-        $usernameHelper = new UsersName($container->getServiceLocator()
-                        ->get('UserMapper'));
+        $usernameHelper = new UsersName($container->get('userMapper'));
         return $usernameHelper;
     }
 

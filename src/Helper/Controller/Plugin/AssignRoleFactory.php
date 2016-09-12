@@ -27,7 +27,7 @@ class AssignRoleFactory implements FactoryInterface
     public function __invoke(ContainerInterface $container, $requestedName,
             array $options = null)
     {
-        $assignRolePlugin = new AssignRole($container->getServiceLocator()->get('dbAdapter'));
+        $assignRolePlugin = new AssignRole($container->get('dbAdapter'));
         return $assignRolePlugin;
     }
 
