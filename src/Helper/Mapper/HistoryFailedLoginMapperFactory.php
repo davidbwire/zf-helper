@@ -23,7 +23,6 @@ class HistoryFailedLoginMapperFactory implements FactoryInterface
         $historyFailedLoginMapper = new HistoryFailedLoginMapper('history_failed_login',
                 $serviceLocator->get('dbAdapter'));
         // Set a ServiceLocator lazy loading LoggerService etc.
-        $historyFailedLoginMapper->setServiceLocator($serviceLocator);
         return $historyFailedLoginMapper;
     }
 
@@ -33,7 +32,6 @@ class HistoryFailedLoginMapperFactory implements FactoryInterface
         $historyFailedLoginMapper = new HistoryFailedLoginMapper('history_failed_login',
                 $container->get('dbAdapter'));
         // Set a ServiceLocator lazy loading LoggerService etc.
-        $historyFailedLoginMapper->setServiceLocator($container);
         return $historyFailedLoginMapper;
     }
 
