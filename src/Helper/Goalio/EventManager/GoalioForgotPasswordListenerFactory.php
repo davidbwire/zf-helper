@@ -31,7 +31,7 @@ class GoalioForgotPasswordListenerFactory implements FactoryInterface
     {
         $goalioForgotPasswordListener = new GoalioForgotPasswordListener($container->get('dbAdapter'));
         // add the service locator to retreive mappers, etc
-        $goalioForgotPasswordListener->setServiceLocator($serviceLocator);
+        $goalioForgotPasswordListener->setServiceLocator($container);
         return $goalioForgotPasswordListener;
     }
 
